@@ -2,12 +2,12 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDkCAXCZGzBzWinm_jBtXacIu0KLcB2uaE",
-  authDomain: "eco-talk-webapp.firebaseapp.com",
-  projectId: "eco-talk-webapp",
-  storageBucket: "eco-talk-webapp.firebasestorage.app",
-  messagingSenderId: "371889778678",
-  appId: "1:371889778678:web:f0d3ac42a38f9d4a8061d7"
+  apiKey: "AIzaSyD5RbahWpzI6X_30hqZ9BHw7LfwxVy4fwA",
+  authDomain: "buddy-talk-1955c.firebaseapp.com",
+  projectId: "buddy-talk-1955c",
+  storageBucket: "buddy-talk-1955c.firebasestorage.app",
+  messagingSenderId: "299535253970",
+  appId: "1:299535253970:web:3cbb248b877bf7be3d480b"
 };
 
 const app = initializeApp(firebaseConfig);

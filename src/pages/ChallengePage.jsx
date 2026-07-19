@@ -369,7 +369,7 @@ const challengesData = {
   }
 };
 
-export default function ChallengePage({ topic, onComplete, onNext, onBack }) {
+export default function ChallengePage({ topic, onComplete, onNext, onBack, onStepComplete }) {
   const tId = topic.id || "bima";
   const data = challengesData[tId] || challengesData.bima;
 
@@ -557,9 +557,13 @@ export default function ChallengePage({ topic, onComplete, onNext, onBack }) {
 
   const handleNextStep = () => {
     if (activeStep < 3) {
+      const completedStep = activeStep + 1; // 1, 2, or 3
+      if (onStepComplete) {
+        onStepComplete(completedStep);
+      }
       setActiveStep(prev => prev + 1);
     } else {
-      // Mark challenge progress completed
+      // Mark challenge progress completed (Step 4)
       if (onComplete) {
         onComplete();
       }

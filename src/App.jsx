@@ -95,16 +95,27 @@ export default function App() {
           merged[topicId] = {
             listened: studentProgress[topicId]?.listened || false,
             answered: studentProgress[topicId]?.answered || false,
-            challengeCompleted: studentProgress[topicId]?.challengeCompleted || false
+            challengeCompleted: studentProgress[topicId]?.challengeCompleted || false,
+            challenge1: studentProgress[topicId]?.challenge1 || false,
+            challenge2: studentProgress[topicId]?.challenge2 || false,
+            challenge3: studentProgress[topicId]?.challenge3 || false,
+            challenge4: studentProgress[topicId]?.challenge4 || false,
+            rekamSuara: studentProgress[topicId]?.rekamSuara || false
           };
         });
 
         // 2. Merge current local prev progress
         Object.keys(prev).forEach(topicId => {
           merged[topicId] = {
+            ...(merged[topicId] || {}),
             listened: merged[topicId]?.listened || prev[topicId]?.listened || false,
             answered: merged[topicId]?.answered || prev[topicId]?.answered || false,
-            challengeCompleted: merged[topicId]?.challengeCompleted || prev[topicId]?.challengeCompleted || false
+            challengeCompleted: merged[topicId]?.challengeCompleted || prev[topicId]?.challengeCompleted || false,
+            challenge1: merged[topicId]?.challenge1 || prev[topicId]?.challenge1 || false,
+            challenge2: merged[topicId]?.challenge2 || prev[topicId]?.challenge2 || false,
+            challenge3: merged[topicId]?.challenge3 || prev[topicId]?.challenge3 || false,
+            challenge4: merged[topicId]?.challenge4 || prev[topicId]?.challenge4 || false,
+            rekamSuara: merged[topicId]?.rekamSuara || prev[topicId]?.rekamSuara || false
           };
         });
 
@@ -114,10 +125,16 @@ export default function App() {
             merged[topicId] = {
               listened: false,
               answered: true,
-              challengeCompleted: false
+              challengeCompleted: false,
+              challenge1: false,
+              challenge2: false,
+              challenge3: false,
+              challenge4: false,
+              rekamSuara: true
             };
           } else {
             merged[topicId].answered = true;
+            merged[topicId].rekamSuara = true;
           }
         });
 
@@ -220,12 +237,38 @@ export default function App() {
         setStars(s => s + 20);
       }
 
+      // Initialize with default false values if this topic progress doesn't exist yet
+      const defaultState = {
+        listened: false,
+        challenge1: false,
+        challenge2: false,
+        challenge3: false,
+        challenge4: false,
+        rekamSuara: false
+      };
+      
+      const currentTopicProgress = prev[topicId] ? { ...prev[topicId] } : defaultState;
+
+      // Set the appropriate field based on type
+      if (type === 'listened') {
+        currentTopicProgress.listened = true;
+      } else if (type === 'challenge1') {
+        currentTopicProgress.challenge1 = true;
+      } else if (type === 'challenge2') {
+        currentTopicProgress.challenge2 = true;
+      } else if (type === 'challenge3') {
+        currentTopicProgress.challenge3 = true;
+      } else if (type === 'challenge4' || type === 'challengeCompleted') {
+        currentTopicProgress.challenge4 = true;
+        currentTopicProgress.challengeCompleted = true; // Keep for compatibility
+      } else if (type === 'answered') {
+        currentTopicProgress.answered = true;
+        currentTopicProgress.rekamSuara = true;
+      }
+
       const nextProgress = {
         ...prev,
-        [topicId]: {
-          ...(prev[topicId] || {}),
-          [type]: true
-        }
+        [topicId]: currentTopicProgress
       };
       sessionStorage.setItem('buddyTalkProgress', JSON.stringify(nextProgress));
       
@@ -342,8 +385,12 @@ export default function App() {
                     
                     <button 
                       onClick={() => {
-                        alert("Silakan pilih topik cerita terlebih dahulu di halaman Beranda untuk mulai belajar!");
-                        navigateTo('home');
+                        if (selectedTopic) {
+                          navigateTo('story', selectedTopic);
+                        } else {
+                          alert("Silakan pilih topik cerita terlebih dahulu di halaman Beranda untuk mulai belajar!");
+                          navigateTo('home');
+                        }
                       }}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs md:text-sm font-extrabold transition-all cursor-pointer ${
                         view === 'story' || view === 'rubric'
@@ -468,6 +515,9 @@ export default function App() {
                     progress={progress}
                     onComplete={() => {
                       markProgress(selectedTopic.id, 'challengeCompleted');
+                    }}
+                    onStepComplete={(stepNum) => {
+                      markProgress(selectedTopic.id, `challenge${stepNum}`);
                     }}
                     onNext={() => {
                       navigateTo('answer', selectedTopic);

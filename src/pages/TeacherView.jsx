@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { getAssessments, updateAssessment, getStudents, deleteAssessment, deleteStudentAndAssessments } from '../db';
+import { getAssessments, updateAssessment, getStudents, deleteAssessment, deleteStudentAndAssessments, updateStudentProgress } from '../db';
 import { Play, Pause, CheckCircle2, ChevronRight, Save, LogOut, Trash2, ChevronLeft, Home } from 'lucide-react';
 import { topics } from '../data';
 
@@ -60,10 +60,38 @@ export default function TeacherView({ onLogout, onHome }) {
       score,
       graded: true
     };
-    await updateAssessment(updated);
-    alert('Nilai berhasil disimpan!');
-    loadData();
-    setSelectedAssessment(updated); // Refresh current view
+    
+    try {
+      // 1. Update the assessment in Firestore
+      await updateAssessment(updated);
+      
+      // 2. Also update student progress map in buddytalk_students
+      if (selectedAssessment.studentId && selectedAssessment.studentId !== 'anonymous') {
+        const student = students[selectedAssessment.studentId];
+        if (student) {
+          const currentProgress = student.progress || {};
+          const topicId = selectedAssessment.topicId;
+          
+          const updatedProgress = {
+            ...currentProgress,
+            [topicId]: {
+              ...(currentProgress[topicId] || {}),
+              score: score,
+              graded: true
+            }
+          };
+          
+          await updateStudentProgress(selectedAssessment.studentId, updatedProgress);
+        }
+      }
+      
+      alert('Nilai berhasil disimpan!');
+      loadData();
+      setSelectedAssessment(updated); // Refresh current view
+    } catch (err) {
+      console.error("Gagal menyimpan nilai:", err);
+      alert("Gagal menyimpan nilai ke database.");
+    }
   };
 
   const handleDelete = async () => {
