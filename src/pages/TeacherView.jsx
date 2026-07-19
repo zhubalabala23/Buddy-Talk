@@ -100,17 +100,43 @@ export default function TeacherView({ onLogout, onHome }) {
     const studentName = student ? student.name : 'Siswa';
     const confirmDelete = window.confirm(
       student 
-        ? `Apakah Anda yakin ingin menghapus data penilaian dan mereset data siswa "${studentName}"? Siswa akan dapat mengisi kembali nama dan nomor absen mereka.`
-        : "Apakah Anda yakin ingin menghapus data penilaian ini?"
+        ? `Apakah Anda yakin ingin menghapus rekaman suara untuk siswa "${studentName}"? Berkas rekaman suara dan nilai akan terhapus, tetapi data profil siswa dan riwayat tantangan tetap dipertahankan agar siswa bisa merekam suara ulang.`
+        : "Apakah Anda yakin ingin menghapus rekaman suara ini?"
     );
     if (confirmDelete) {
-      if (selectedAssessment.studentId && selectedAssessment.studentId !== 'anonymous') {
-        await deleteStudentAndAssessments(selectedAssessment.studentId);
-      } else {
+      try {
+        // 1. Delete the assessment document from Firestore
         await deleteAssessment(selectedAssessment.id);
+        
+        // 2. Update student progress map if not anonymous
+        if (selectedAssessment.studentId && selectedAssessment.studentId !== 'anonymous' && student) {
+          const currentProgress = student.progress || {};
+          const topicId = selectedAssessment.topicId;
+          
+          if (currentProgress[topicId]) {
+            const updatedProgress = {
+              ...currentProgress,
+              [topicId]: {
+                ...currentProgress[topicId],
+                rekamSuara: false,
+                answered: false,
+                graded: false
+              }
+            };
+            // Delete the score field from the map
+            delete updatedProgress[topicId].score;
+            
+            await updateStudentProgress(selectedAssessment.studentId, updatedProgress);
+          }
+        }
+        
+        alert('Rekaman suara berhasil dihapus!');
+        setSelectedAssessment(null);
+        loadData();
+      } catch (err) {
+        console.error("Gagal menghapus rekaman suara:", err);
+        alert("Gagal menghapus rekaman suara dari database.");
       }
-      setSelectedAssessment(null);
-      loadData();
     }
   };
 
