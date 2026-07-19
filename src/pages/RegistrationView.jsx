@@ -46,232 +46,234 @@ export default function RegistrationView({ onComplete, onBack }) {
   };
 
   return (
-    <>
-      {/* Background Image for Registration Page */}
-      <img 
-        src={bgRegistration} 
-        alt="Registration Background" 
-        className="fixed inset-0 w-full h-full object-fill pointer-events-none"
-        style={{ zIndex: 0 }}
-      />
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="h-screen w-screen overflow-hidden relative select-none bg-[#bae6fd] font-sans flex items-center justify-center"
+    >
+      {/* Unified Background Wrapper to preserve desktop proportions and crop on mobile */}
+      <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[1280px] lg:w-full lg:left-0 lg:translate-x-0 pointer-events-auto z-0 overflow-hidden">
+        {/* Background Image for Registration Page */}
+        <img 
+          src={bgRegistration} 
+          alt="Registration Background" 
+          className="w-full h-full object-fill pointer-events-none absolute inset-0 -z-10"
+        />
 
-      {/* --- CLOUD ANIMATIONS --- */}
-      {/* Passing Cloud 1 */}
-      <motion.div 
-        className="fixed text-white/55 select-none pointer-events-none"
-        style={{
-          top: '4%',
-          width: '9%',
-          zIndex: 5,
-        }}
-        initial={{ x: '-15vw' }}
-        animate={{ x: '105vw' }}
-        transition={{
-          duration: 48,
-          repeat: Infinity,
-          ease: "linear",
-          delay: 0,
-        }}
-      >
-        <svg viewBox="0 0 100 50" fill="currentColor" className="w-full h-full">
-          <path d="M10 30a10 10 0 0 1 10-10 12 12 0 0 1 22-5 15 15 0 0 1 28 3 10 10 0 0 1 18 10 8 8 0 0 1 0 16H10a8 8 0 0 1 0-14z" />
-        </svg>
-      </motion.div>
+        {/* --- CLOUD ANIMATIONS --- */}
+        {/* Passing Cloud 1 */}
+        <motion.div 
+          className="absolute text-white/55 select-none pointer-events-none"
+          style={{
+            top: '4%',
+            width: '9%',
+            zIndex: 5,
+          }}
+          initial={{ x: '-15vw' }}
+          animate={{ x: '105vw' }}
+          transition={{
+            duration: 48,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 0,
+          }}
+        >
+          <svg viewBox="0 0 100 50" fill="currentColor" className="w-full h-full">
+            <path d="M10 30a10 10 0 0 1 10-10 12 12 0 0 1 22-5 15 15 0 0 1 28 3 10 10 0 0 1 18 10 8 8 0 0 1 0 16H10a8 8 0 0 1 0-14z" />
+          </svg>
+        </motion.div>
 
-      {/* Passing Cloud 2 */}
-      <motion.div 
-        className="fixed text-white/70 select-none pointer-events-none"
-        style={{
-          top: '11%',
-          width: '13%',
-          zIndex: 5,
-        }}
-        initial={{ x: '-18vw' }}
-        animate={{ x: '105vw' }}
-        transition={{
-          duration: 38,
-          repeat: Infinity,
-          ease: "linear",
-          delay: 10,
-        }}
-      >
-        <svg viewBox="0 0 100 50" fill="currentColor" className="w-full h-full">
-          <path d="M10 30a10 10 0 0 1 10-10 12 12 0 0 1 22-5 15 15 0 0 1 28 3 10 10 0 0 1 18 10 8 8 0 0 1 0 16H10a8 8 0 0 1 0-14z" />
-        </svg>
-      </motion.div>
+        {/* Passing Cloud 2 */}
+        <motion.div 
+          className="absolute text-white/70 select-none pointer-events-none"
+          style={{
+            top: '11%',
+            width: '13%',
+            zIndex: 5,
+          }}
+          initial={{ x: '-18vw' }}
+          animate={{ x: '105vw' }}
+          transition={{
+            duration: 38,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 10,
+          }}
+        >
+          <svg viewBox="0 0 100 50" fill="currentColor" className="w-full h-full">
+            <path d="M10 30a10 10 0 0 1 10-10 12 12 0 0 1 22-5 15 15 0 0 1 28 3 10 10 0 0 1 18 10 8 8 0 0 1 0 16H10a8 8 0 0 1 0-14z" />
+          </svg>
+        </motion.div>
 
-      {/* Passing Cloud 3 */}
-      <motion.div 
-        className="fixed text-white/45 select-none pointer-events-none"
-        style={{
-          top: '7%',
-          width: '8%',
-          zIndex: 5,
-        }}
-        initial={{ x: '-12vw' }}
-        animate={{ x: '105vw' }}
-        transition={{
-          duration: 58,
-          repeat: Infinity,
-          ease: "linear",
-          delay: 20,
-        }}
-      >
-        <svg viewBox="0 0 100 50" fill="currentColor" className="w-full h-full">
-          <path d="M10 30a10 10 0 0 1 10-10 12 12 0 0 1 22-5 15 15 0 0 1 28 3 10 10 0 0 1 18 10 8 8 0 0 1 0 16H10a8 8 0 0 1 0-14z" />
-        </svg>
-      </motion.div>
+        {/* Passing Cloud 3 */}
+        <motion.div 
+          className="absolute text-white/45 select-none pointer-events-none"
+          style={{
+            top: '7%',
+            width: '8%',
+            zIndex: 5,
+          }}
+          initial={{ x: '-12vw' }}
+          animate={{ x: '105vw' }}
+          transition={{
+            duration: 58,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 20,
+          }}
+        >
+          <svg viewBox="0 0 100 50" fill="currentColor" className="w-full h-full">
+            <path d="M10 30a10 10 0 0 1 10-10 12 12 0 0 1 22-5 15 15 0 0 1 28 3 10 10 0 0 1 18 10 8 8 0 0 1 0 16H10a8 8 0 0 1 0-14z" />
+          </svg>
+        </motion.div>
 
-      {/* Passing Cloud 4 */}
-      <motion.div 
-        className="fixed text-white/65 select-none pointer-events-none"
-        style={{
-          top: '16%',
-          width: '11%',
-          zIndex: 5,
-        }}
-        initial={{ x: '-15vw' }}
-        animate={{ x: '105vw' }}
-        transition={{
-          duration: 44,
-          repeat: Infinity,
-          ease: "linear",
-          delay: 32,
-        }}
-      >
-        <svg viewBox="0 0 100 50" fill="currentColor" className="w-full h-full">
-          <path d="M10 30a10 10 0 0 1 10-10 12 12 0 0 1 22-5 15 15 0 0 1 28 3 10 10 0 0 1 18 10 8 8 0 0 1 0 16H10a8 8 0 0 1 0-14z" />
-        </svg>
-      </motion.div>
+        {/* Passing Cloud 4 */}
+        <motion.div 
+          className="absolute text-white/65 select-none pointer-events-none"
+          style={{
+            top: '16%',
+            width: '11%',
+            zIndex: 5,
+          }}
+          initial={{ x: '-15vw' }}
+          animate={{ x: '105vw' }}
+          transition={{
+            duration: 44,
+            repeat: Infinity,
+            ease: "linear",
+            delay: 32,
+          }}
+        >
+          <svg viewBox="0 0 100 50" fill="currentColor" className="w-full h-full">
+            <path d="M10 30a10 10 0 0 1 10-10 12 12 0 0 1 22-5 15 15 0 0 1 28 3 10 10 0 0 1 18 10 8 8 0 0 1 0 16H10a8 8 0 0 1 0-14z" />
+          </svg>
+        </motion.div>
 
-      {/* Right Tree (fixed to top right, full height, width scales proportionally) */}
-      <motion.img
-        src={pohonKanan}
-        alt="Pohon Kanan"
-        className="fixed right-0 top-0 h-full w-auto object-contain pointer-events-none select-none z-10 hidden md:block"
-        style={{ transformOrigin: 'top right' }}
-        initial={{ opacity: 0, x: 80 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ type: 'spring', damping: 20, stiffness: 80, duration: 1 }}
-      />
+        {/* Right Tree (fixed to top right, full height, width scales proportionally) */}
+        <motion.img
+          src={pohonKanan}
+          alt="Pohon Kanan"
+          className="absolute right-0 top-0 h-full w-auto object-contain pointer-events-none select-none z-10 hidden lg:block"
+          style={{ transformOrigin: 'top right' }}
+          initial={{ opacity: 0, x: 80 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ type: 'spring', damping: 20, stiffness: 80, duration: 1 }}
+        />
 
-      {/* Swing (Ayunan) hanging from Tree (aligned with Pohon Kanan) */}
-      <motion.img
-        src={ayunan}
-        alt="Ayunan"
-        className="fixed right-0 top-0 h-full w-auto object-contain pointer-events-none select-none z-10 hidden md:block"
-        style={{ transformOrigin: 'top right' }}
-        initial={{ opacity: 0 }}
-        animate={{ 
-          opacity: 1,
-          y: [0, 5, 0] // Gentle floating effect
-        }}
-        transition={{
-          opacity: { duration: 1, delay: 0.3 },
-          y: { duration: 5, repeat: Infinity, ease: "easeInOut" }
-        }}
-      />
-      {/* Boy Character */}
-      <motion.img
-        src={karakterCowo}
-        alt="Karakter Cowo"
-        className="fixed z-10 pointer-events-none select-none"
-        style={{
-          left: '12%',
-          width: '9%',
-          top: '46%',
-          transformOrigin: 'bottom center',
-        }}
-        animate={{ scale: [1, 1.04, 1] }}
-        transition={{
-          duration: 2.2,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      />
+        {/* Swing (Ayunan) hanging from Tree (aligned with Pohon Kanan) */}
+        <motion.img
+          src={ayunan}
+          alt="Ayunan"
+          className="absolute right-0 top-0 h-full w-auto object-contain pointer-events-none select-none z-10 hidden lg:block"
+          style={{ transformOrigin: 'top right' }}
+          initial={{ opacity: 0 }}
+          animate={{ 
+            opacity: 1,
+            y: [0, 5, 0] // Gentle floating effect
+          }}
+          transition={{
+            opacity: { duration: 1, delay: 0.3 },
+            y: { duration: 5, repeat: Infinity, ease: "easeInOut" }
+          }}
+        />
 
-      {/* Girl Character */}
-      <motion.img
-        src={karakterCewe}
-        alt="Karakter Cewe"
-        className="fixed z-10 pointer-events-none select-none"
-        style={{
-          left: '19%',
-          width: '8%',
-          top: '49%',
-          transformOrigin: 'bottom center',
-        }}
-        animate={{ scale: [1, 1.04, 1] }}
-        transition={{
-          duration: 2.2,
-          delay: 0.3,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      />
+        {/* Boy Character */}
+        <motion.img
+          src={karakterCowo}
+          alt="Karakter Cowo"
+          className="absolute z-10 pointer-events-none select-none hidden lg:block"
+          style={{
+            left: '12%',
+            width: '9%',
+            top: '46%',
+            transformOrigin: 'bottom center',
+          }}
+          animate={{ scale: [1, 1.04, 1] }}
+          transition={{
+            duration: 2.2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
 
-      {/* Signboard (Papan Nama) - Positioned on the right side grass area above the head of siswiKiri */}
-      <motion.img
-        src={papanNama}
-        alt="Papan Nama"
-        className="fixed z-20 pointer-events-none select-none hidden md:block right-[23%] bottom-[29%] h-[28vh] w-auto origin-bottom drop-shadow-md"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      />
+        {/* Girl Character */}
+        <motion.img
+          src={karakterCewe}
+          alt="Karakter Cewe"
+          className="absolute z-10 pointer-events-none select-none hidden lg:block"
+          style={{
+            left: '19%',
+            width: '8%',
+            top: '49%',
+            transformOrigin: 'bottom center',
+          }}
+          animate={{ scale: [1, 1.04, 1] }}
+          transition={{
+            duration: 2.2,
+            delay: 0.3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
 
-      {/* Schoolgirls sitting on the grass */}
-      {/* Siswi Kiri (sitting cross-legged, writing in book) */}
-      <motion.img
-        src={siswiKiri}
-        alt="Siswi Kiri"
-        className="fixed z-20 pointer-events-none select-none left-2 bottom-2 h-[12vh] md:left-auto md:right-[26%] md:bottom-[5%] md:h-[26vh] w-auto origin-bottom"
-        initial={{ opacity: 0, scale: 0.9, y: 30 }}
-        animate={{ 
-          opacity: 1, 
-          scale: [1, 1.03, 1],
-          y: 0 
-        }}
-        transition={{ 
-          opacity: { duration: 0.8, delay: 0.5 },
-          y: { duration: 0.8, delay: 0.5 },
-          scale: { duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.2 }
-        }}
-      />
+        {/* Signboard (Papan Nama) - Positioned on the right side grass area above the head of siswiKiri */}
+        <motion.img
+          src={papanNama}
+          alt="Papan Nama"
+          className="absolute z-20 pointer-events-none select-none hidden lg:block right-[23%] bottom-[29%] h-[28vh] w-auto origin-bottom drop-shadow-md"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        />
 
-      {/* Siswi Kanan (sitting cross-legged, talking) */}
-      <motion.img
-        src={siswiKanan}
-        alt="Siswi Kanan"
-        className="fixed z-20 pointer-events-none select-none right-2 bottom-2 h-[11vh] md:right-[17%] md:bottom-[4.5%] md:h-[24.5vh] w-auto origin-bottom"
-        initial={{ opacity: 0, scale: 0.9, y: 30 }}
-        animate={{ 
-          opacity: 1, 
-          scale: [1, 1.03, 1],
-          y: 0 
-        }}
-        transition={{ 
-          opacity: { duration: 0.8, delay: 0.7 },
-          y: { duration: 0.8, delay: 0.7 },
-          scale: { duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }
-        }}
-      />
+        {/* Schoolgirls sitting on the grass */}
+        {/* Siswi Kiri (sitting cross-legged, writing in book) */}
+        <motion.img
+          src={siswiKiri}
+          alt="Siswi Kiri"
+          className="absolute z-20 pointer-events-none select-none hidden lg:block lg:right-[26%] lg:bottom-[5%] lg:h-[26vh] w-auto origin-bottom"
+          initial={{ opacity: 0, scale: 0.9, y: 30 }}
+          animate={{ 
+            opacity: 1, 
+            scale: [1, 1.03, 1],
+            y: 0 
+          }}
+          transition={{ 
+            opacity: { duration: 0.8, delay: 0.5 },
+            y: { duration: 0.8, delay: 0.5 },
+            scale: { duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.2 }
+          }}
+        />
 
-      {/* 1. Logo Card (Top Left) */}
+        {/* Siswi Kanan (sitting cross-legged, talking) */}
+        <motion.img
+          src={siswiKanan}
+          alt="Siswi Kanan"
+          className="absolute z-20 pointer-events-none select-none hidden lg:block lg:right-[17%] lg:bottom-[4.5%] lg:h-[24.5vh] w-auto origin-bottom"
+          initial={{ opacity: 0, scale: 0.9, y: 30 }}
+          animate={{ 
+            opacity: 1, 
+            scale: [1, 1.03, 1],
+            y: 0 
+          }}
+          transition={{ 
+            opacity: { duration: 0.8, delay: 0.7 },
+            y: { duration: 0.8, delay: 0.7 },
+            scale: { duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }
+          }}
+        />
+      </div>
+
+      {/* 1. Logo Card (Top Left / Centered on Mobile) */}
       <img 
         src={cardKiriAtas} 
         alt="BuddyTalk Logo" 
-        className="fixed z-20 pointer-events-none drop-shadow-md"
-        style={{
-          left: '-1.5%',
-          top: '-1.5%',
-          width: '21%',
-          minWidth: '150px',
-        }}
+        className="fixed z-20 pointer-events-none drop-shadow-md left-1/2 -translate-x-1/2 w-[55vw] lg:left-[-1.5%] lg:translate-x-0 lg:w-[21%] lg:min-width-[150px] top-2 lg:top-[-1.5%]"
       />
 
       {/* Header with Back button positioned below the logo card */}
-      <header className="fixed top-[110px] md:top-[160px] left-4 md:left-8 flex items-center z-50">
+      <header className="fixed top-4 left-4 lg:top-[160px] lg:left-8 flex items-center z-50">
         <motion.button 
           onClick={onBack}
           animate={{ scale: [1, 1.1, 1] }}
@@ -342,6 +344,6 @@ export default function RegistrationView({ onComplete, onBack }) {
           </form>
         </motion.div>
       </div>
-    </>
+    </motion.div>
   );
 }

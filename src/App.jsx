@@ -319,6 +319,15 @@ export default function App() {
           onTeacherStart={() => navigateTo('teacher-login')} 
           onScoreDashboard={() => navigateTo('dashboard')}
         />
+      ) : view === 'register' ? (
+        <RegistrationView 
+          key="register" 
+          onComplete={(student) => {
+            setStudentInfo(student);
+            navigateTo('guide');
+          }}
+          onBack={() => navigateTo('landing')}
+        />
       ) : (
         <motion.div 
           key="main-app"
@@ -466,16 +475,6 @@ export default function App() {
 
             <main className="w-full max-w-6xl mx-auto px-4 py-6 relative overflow-hidden">
               <AnimatePresence mode="wait">
-                {view === 'register' && (
-                  <RegistrationView 
-                    key="register" 
-                    onComplete={(student) => {
-                      setStudentInfo(student);
-                      navigateTo('guide');
-                    }}
-                    onBack={() => navigateTo('landing')}
-                  />
-                )}
                 {view === 'guide' && (
                   <GuideView
                     key="guide"
