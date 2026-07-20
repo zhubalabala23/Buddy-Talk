@@ -4,15 +4,44 @@ import { getAssessments, updateAssessment, getStudents, deleteAssessment, delete
 import { Play, Pause, CheckCircle2, ChevronRight, Save, LogOut, Trash2, ChevronLeft, Home } from 'lucide-react';
 import { topics } from '../data';
 
+const INDICATORS = [
+  {
+    key: 'c1',
+    name: 'Ketepatan Isi',
+    desc: 'Menjelaskan sebab dan akibat yang dialami tokoh dengan tepat'
+  },
+  {
+    key: 'c2',
+    name: 'Keruntutan Penyampaian',
+    desc: 'Bercerita runtut dari awal hingga akhir'
+  },
+  {
+    key: 'c3',
+    name: 'Penggunaan Bahasa dan Kata Penghubung Sebab-Akibat',
+    desc: 'Menggunakan kata seperti karena, sehingga, akibatnya'
+  },
+  {
+    key: 'c4',
+    name: 'Kelancaran Berbicara',
+    desc: 'Berbicara tanpa banyak jeda atau pengulangan kata'
+  },
+  {
+    key: 'c5',
+    name: 'Kepercayaan Diri',
+    desc: 'Bercerita tanpa terlihat ragu-ragu atau gugup'
+  }
+];
+
 export default function TeacherView({ onLogout, onHome }) {
   const [assessments, setAssessments] = useState([]);
   const [students, setStudents] = useState({});
   const [selectedAssessment, setSelectedAssessment] = useState(null);
   const [criteria, setCriteria] = useState({
-    c1: false, // Saya sudah menjelaskan penyebab peristiwa
-    c2: false, // Saya sudah menjelaskan akibat peristiwa
-    c3: false, // Saya berbicara dengan suara yang jelas
-    c4: false, // Saya berbicara dengan lancar
+    c1: 4,
+    c2: 4,
+    c3: 4,
+    c4: 4,
+    c5: 4,
   });
 
   useEffect(() => {
@@ -33,22 +62,36 @@ export default function TeacherView({ onLogout, onHome }) {
 
   const handleSelect = (assessment) => {
     setSelectedAssessment(assessment);
-    setCriteria(assessment.criteria || {
-      c1: false, c2: false, c3: false, c4: false
+    const existing = assessment.criteria || {};
+    
+    // Support parsing legacy boolean criteria values (true -> 4, false -> 1)
+    const parseVal = (val) => {
+      if (typeof val === 'boolean') return val ? 4 : 1;
+      if (typeof val === 'number' && val >= 1 && val <= 4) return val;
+      return 4; // Default value if missing or invalid
+    };
+
+    setCriteria({
+      c1: parseVal(existing.c1),
+      c2: parseVal(existing.c2),
+      c3: parseVal(existing.c3),
+      c4: parseVal(existing.c4),
+      c5: parseVal(existing.c5)
     });
   };
 
-  const handleCheckboxChange = (key) => {
-    setCriteria(prev => ({ ...prev, [key]: !prev[key] }));
+  const handleScoreChange = (key, value) => {
+    setCriteria(prev => ({ ...prev, [key]: value }));
   };
 
   const calculateScore = () => {
-    let score = 0;
-    if (criteria.c1) score += 25;
-    if (criteria.c2) score += 25;
-    if (criteria.c3) score += 25;
-    if (criteria.c4) score += 25;
-    return score;
+    const getVal = (v) => (typeof v === 'number' && v >= 1 && v <= 4) ? v : 4;
+    const s1 = (getVal(criteria.c1) / 4) * 20;
+    const s2 = (getVal(criteria.c2) / 4) * 20;
+    const s3 = (getVal(criteria.c3) / 4) * 20;
+    const s4 = (getVal(criteria.c4) / 4) * 20;
+    const s5 = (getVal(criteria.c5) / 4) * 20;
+    return Math.round(s1 + s2 + s3 + s4 + s5);
   };
 
   const saveScore = async () => {
@@ -223,43 +266,60 @@ export default function TeacherView({ onLogout, onHome }) {
               )}
             </div>
 
-            <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
-              <h3 className="font-bold text-slate-700 mb-2 md:mb-4">Indikator (25% per poin):</h3>
-              <label className="flex items-start md:items-center space-x-3 p-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors">
-                <input type="checkbox" checked={criteria.c1} onChange={() => handleCheckboxChange('c1')} className="mt-1 md:mt-0 w-5 h-5 text-[#315588] rounded border-slate-300 focus:ring-[#315588] flex-shrink-0" />
-                <span className="text-sm md:text-base text-slate-700">Saya sudah menjelaskan penyebab peristiwa</span>
-              </label>
-              <label className="flex items-start md:items-center space-x-3 p-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors">
-                <input type="checkbox" checked={criteria.c2} onChange={() => handleCheckboxChange('c2')} className="mt-1 md:mt-0 w-5 h-5 text-[#315588] rounded border-slate-300 focus:ring-[#315588] flex-shrink-0" />
-                <span className="text-sm md:text-base text-slate-700">Saya sudah menjelaskan akibat peristiwa</span>
-              </label>
-              <label className="flex items-start md:items-center space-x-3 p-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors">
-                <input type="checkbox" checked={criteria.c3} onChange={() => handleCheckboxChange('c3')} className="mt-1 md:mt-0 w-5 h-5 text-[#315588] rounded border-slate-300 focus:ring-[#315588] flex-shrink-0" />
-                <span className="text-sm md:text-base text-slate-700">Saya berbicara dengan suara yang jelas</span>
-              </label>
-              <label className="flex items-start md:items-center space-x-3 p-3 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition-colors">
-                <input type="checkbox" checked={criteria.c4} onChange={() => handleCheckboxChange('c4')} className="mt-1 md:mt-0 w-5 h-5 text-[#315588] rounded border-slate-300 focus:ring-[#315588] flex-shrink-0" />
-                <span className="text-sm md:text-base text-slate-700">Saya berbicara dengan lancar</span>
-              </label>
+            <div className="space-y-4 md:space-y-6 mb-6 md:mb-8">
+              <div>
+                <h3 className="font-bold text-slate-700 text-sm md:text-base">Indikator (Skala 1-4, 20% per indikator):</h3>
+                <div className="border-b border-slate-200 mt-2"></div>
+              </div>
+              
+              {INDICATORS.map((ind) => {
+                const currentVal = criteria[ind.key] || 4;
+                return (
+                  <div key={ind.key} className="border-b border-slate-100 pb-4 last:border-b-0 last:pb-0">
+                    <h4 className="font-bold text-slate-800 text-sm md:text-base">{ind.name}</h4>
+                    <p className="text-xs md:text-sm text-slate-500 mt-0.5">{ind.desc}</p>
+                    <div className="flex items-center gap-6 mt-3">
+                      {[4, 3, 2, 1].map((score) => {
+                        const isSelected = currentVal === score;
+                        return (
+                          <label key={score} className="flex items-center gap-2 cursor-pointer group select-none">
+                            <input
+                              type="radio"
+                              name={ind.key}
+                              value={score}
+                              checked={isSelected}
+                              onChange={() => handleScoreChange(ind.key, score)}
+                              className="w-4.5 h-4.5 text-[#315588] border-slate-300 focus:ring-[#315588] cursor-pointer animate-none"
+                            />
+                            <span className="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">
+                              {score}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             <div className="flex flex-col md:flex-row items-center justify-between pt-6 border-t border-slate-200 gap-4">
-              <div className="text-lg md:text-xl font-bold w-full md:w-auto text-center md:text-left">
+              <div className="text-lg md:text-xl font-bold w-full md:w-auto text-center md:text-left text-slate-800">
                 Total Nilai: <span className="text-[#315588]">{calculateScore()}/100</span>
               </div>
               <div className="flex gap-2 w-full md:w-auto">
                 <button 
                   onClick={handleDelete}
-                  className="flex-1 md:flex-none flex items-center justify-center px-4 py-3 text-red-500 font-bold rounded-xl hover:bg-red-50 transition-colors border border-red-200 md:border-none"
+                  className="flex-1 md:flex-none flex items-center justify-center px-4 py-2 border border-red-200 text-red-500 font-bold rounded-xl hover:bg-red-50 transition-colors cursor-pointer"
                 >
-                  <Trash2 className="w-5 h-5 md:mr-2" />
-                  <span className="hidden md:inline">Hapus</span>
+                  <Trash2 className="w-4 h-4 mr-1.5" />
+                  <span>Hapus</span>
                 </button>
                 <button 
                   onClick={saveScore}
-                  className="flex-[2] md:flex-none flex items-center justify-center px-4 md:px-6 py-3 bg-[#315588] text-white font-bold rounded-xl hover:bg-[#233f66] transition-colors"
+                  className="flex-[2] md:flex-none flex items-center justify-center px-6 py-2 bg-[#0066eb] hover:bg-[#0052bd] text-white font-bold rounded-xl transition-colors cursor-pointer shadow-sm"
                 >
-                  <Save className="w-5 h-5 mr-2" />
+                  <Save className="w-4 h-4 mr-1.5" />
                   <span>Simpan</span>
                 </button>
               </div>
