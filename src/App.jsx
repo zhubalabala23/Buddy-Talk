@@ -12,6 +12,7 @@ import ObjectivesView from './pages/ObjectivesView';
 import GuideView from './pages/GuideView';
 import ScoreDashboardView from './pages/ScoreDashboardView';
 import ChallengePage from './pages/ChallengePage';
+import SebabAkibat from './pages/sebab_akibat';
 import { saveAssessment, getStudentAssessments, updateStudentProgress, getStudent } from './db';
 import ceweAudio from './assets/images/charachters_landingpage/karakter_cewe.webp';
 import cowoImg from './assets/images/charachters_landingpage/karakter_cowo.webp';
@@ -393,6 +394,18 @@ export default function App() {
                     </button>
                     
                     <button 
+                      onClick={() => navigateTo('sebab-akibat')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs md:text-sm font-extrabold transition-all cursor-pointer ${
+                        view === 'sebab-akibat'
+                          ? 'bg-white text-blue-600 border border-blue-100 shadow-sm' 
+                          : 'text-slate-500 hover:text-slate-800'
+                      }`}
+                    >
+                      <BookOpen className="w-4 h-4 text-orange-500" />
+                      <span className="hidden sm:inline">Sebab-Akibat</span>
+                    </button>
+                    
+                    <button 
                       onClick={() => {
                         if (selectedTopic) {
                           navigateTo('story', selectedTopic);
@@ -496,6 +509,13 @@ export default function App() {
                   />
                 )}
 
+                {view === 'sebab-akibat' && (
+                  <SebabAkibat
+                    key="sebab-akibat"
+                    onHome={() => navigateTo('home')}
+                  />
+                )}
+
                 {view === 'home' && (
                   <HomeView 
                     key="home" 
@@ -504,6 +524,7 @@ export default function App() {
                     onSelect={(topic) => navigateTo('rubric', topic)} 
                     onScoreDashboard={() => navigateTo('dashboard')}
                     onBack={() => navigateTo('guide')}
+                    onSebabAkibat={() => navigateTo('sebab-akibat')}
                   />
                 )}
                 {view === 'challenge' && selectedTopic && (
@@ -573,7 +594,7 @@ export default function App() {
 }
 
 // 1. Home View / Material Picker
-function HomeView({ onSelect, progress, studentInfo, onBack }) {
+function HomeView({ onSelect, progress, studentInfo, onBack, onSebabAkibat }) {
   // Sparkle icons
   const SparklesLeft = () => (
     <svg width="32" height="24" viewBox="0 0 24 20" fill="none" className="text-amber-400 w-8 h-6 flex-shrink-0">
@@ -591,6 +612,38 @@ function HomeView({ onSelect, progress, studentInfo, onBack }) {
     <div className="space-y-8 max-w-7xl mx-auto px-2 py-4">
       {/* Giant White Card Wrapper */}
       <div className="bg-white/95 backdrop-blur-sm rounded-[2.5rem] shadow-xl border border-slate-100 p-8 md:p-10 space-y-8">
+        
+        {/* Sebab-Akibat Free Learning Banner */}
+        {onSebabAkibat && (
+          <motion.div
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            onClick={onSebabAkibat}
+            className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-3xl p-5 shadow-md flex flex-col sm:flex-row items-center justify-between gap-4 cursor-pointer border-2 border-white/30"
+          >
+            <div className="flex items-center gap-4 text-center sm:text-left">
+              <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 border border-white/30">
+                <BookOpen className="w-6 h-6 text-amber-300" />
+              </div>
+              <div>
+                <span className="bg-amber-400 text-slate-900 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  Materi Bebas
+                </span>
+                <h3 className="text-lg md:text-xl font-black text-white mt-0.5">
+                  Materi Pembelajaran Sebab-Akibat
+                </h3>
+                <p className="text-xs text-blue-100 font-medium">
+                  Pelajari konsep sebab-akibat & kata penghubung kapan saja (tanpa syarat)!
+                </p>
+              </div>
+            </div>
+            <div className="bg-white text-blue-700 font-black px-5 py-2.5 rounded-2xl shadow hover:bg-blue-50 transition-colors flex items-center gap-2 text-xs md:text-sm shrink-0">
+              <span>Buka Materi</span>
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </motion.div>
+        )}
+
         {/* Title Header */}
         <div className="text-center space-y-3 flex flex-col items-center select-none">
           <div className="flex items-center gap-3">
