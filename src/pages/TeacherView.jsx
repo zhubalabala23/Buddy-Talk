@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { getAssessments, updateAssessment, getStudents, deleteAssessment, deleteStudentAndAssessments, updateStudentProgress } from '../db';
-import { Play, Pause, CheckCircle2, ChevronRight, Save, LogOut, Trash2, ChevronLeft, Home } from 'lucide-react';
+import { getAssessments, updateAssessment, getStudents, deleteAssessment, deleteStudentAndAssessments, deleteStudentCompletely, updateStudentProgress } from '../db';
+import { Play, Pause, CheckCircle2, ChevronRight, Save, LogOut, Trash2, ChevronLeft, Home, Users, FileText } from 'lucide-react';
 import { topics } from '../data';
 
 const INDICATORS = [
@@ -35,6 +35,8 @@ const INDICATORS = [
 export default function TeacherView({ onLogout, onHome }) {
   const [assessments, setAssessments] = useState([]);
   const [students, setStudents] = useState({});
+  const [studentsList, setStudentsList] = useState([]);
+  const [activeTab, setActiveTab] = useState('assessments'); // 'assessments' | 'students'
   const [selectedAssessment, setSelectedAssessment] = useState(null);
   const [criteria, setCriteria] = useState({
     c1: 4,
@@ -57,6 +59,7 @@ export default function TeacherView({ onLogout, onHome }) {
       studentMap[s.id] = s;
     });
     setStudents(studentMap);
+    setStudentsList(studentsData);
     setAssessments(data);
   };
 
@@ -143,42 +146,46 @@ export default function TeacherView({ onLogout, onHome }) {
     const studentName = student ? student.name : 'Siswa';
     const confirmDelete = window.confirm(
       student 
-        ? `Apakah Anda yakin ingin menghapus rekaman suara untuk siswa "${studentName}"? Berkas rekaman suara dan nilai akan terhapus, tetapi data profil siswa dan riwayat tantangan tetap dipertahankan agar siswa bisa merekam suara ulang.`
+        ? `Apakah Anda yakin ingin menghapus data siswa "${studentName}" dan rekamannya? Data siswa, nama, serta nomor absen akan terhapus permanen dari Firestore database.`
         : "Apakah Anda yakin ingin menghapus rekaman suara ini?"
     );
     if (confirmDelete) {
       try {
-        // 1. Delete the assessment document from Firestore
+        // Hapus rekaman dari buddytalk_assessments
         await deleteAssessment(selectedAssessment.id);
-        
-        // 2. Update student progress map if not anonymous
-        if (selectedAssessment.studentId && selectedAssessment.studentId !== 'anonymous' && student) {
-          const currentProgress = student.progress || {};
-          const topicId = selectedAssessment.topicId;
-          
-          if (currentProgress[topicId]) {
-            const updatedProgress = {
-              ...currentProgress,
-              [topicId]: {
-                ...currentProgress[topicId],
-                rekamSuara: false,
-                answered: false,
-                graded: false
-              }
-            };
-            // Delete the score field from the map
-            delete updatedProgress[topicId].score;
-            
-            await updateStudentProgress(selectedAssessment.studentId, updatedProgress);
-          }
+
+        // Hapus seluruh dokumen siswa dari buddytalk_students
+        if (student) {
+          await deleteStudentCompletely(student);
+        } else if (selectedAssessment.studentId && selectedAssessment.studentId !== 'anonymous') {
+          await deleteStudentCompletely(selectedAssessment.studentId);
         }
         
-        alert('Rekaman suara berhasil dihapus!');
+        alert('Data siswa dan rekaman suara berhasil terhapus dari Firebase Firestore!');
         setSelectedAssessment(null);
         loadData();
       } catch (err) {
-        console.error("Gagal menghapus rekaman suara:", err);
-        alert("Gagal menghapus rekaman suara dari database.");
+        console.error("Gagal menghapus data:", err);
+        alert("Gagal menghapus data dari database.");
+      }
+    }
+  };
+
+  const handleDeleteStudent = async (student) => {
+    const confirmDelete = window.confirm(
+      `Apakah Anda yakin ingin menghapus data siswa "${student.name}" (Absen: ${student.absen})? Nama dan nomor absen akan terhapus permanen dari Firestore database.`
+    );
+    if (confirmDelete) {
+      try {
+        await deleteStudentCompletely(student);
+        alert(`Data siswa "${student.name}" berhasil terhapus dari Firebase Firestore!`);
+        if (selectedAssessment && selectedAssessment.studentId === student.id) {
+          setSelectedAssessment(null);
+        }
+        loadData();
+      } catch (err) {
+        console.error("Gagal menghapus data siswa:", err);
+        alert("Gagal menghapus data siswa dari database.");
       }
     }
   };
@@ -191,50 +198,112 @@ export default function TeacherView({ onLogout, onHome }) {
   return (
     <div className="flex h-screen bg-[#e0f2fe] text-slate-800">
       {/* Sidebar */}
-      <div className={`${selectedAssessment ? 'hidden md:block' : 'block'} w-full md:w-1/3 lg:w-80 border-r border-slate-200 bg-white overflow-y-auto flex-shrink-0`}>
+      <div className={`${selectedAssessment ? 'hidden md:block' : 'block'} w-full md:w-1/3 lg:w-80 border-r border-slate-200 bg-white overflow-y-auto flex-shrink-0 flex flex-col h-full`}>
         <div className="p-3 md:p-4 bg-[#315588] text-white sticky top-0 z-10 flex justify-between items-center shadow-sm">
           <div className="flex items-center gap-2">
-            <h2 className="text-lg md:text-xl font-bold truncate">Daftar Penilaian</h2>
+            <h2 className="text-lg md:text-xl font-bold truncate">Halaman Penilaian</h2>
           </div>
           {onLogout && (
             <button 
               onClick={onLogout}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500 hover:bg-red-600 rounded-lg text-xs md:text-sm font-bold transition-colors shadow-sm flex-shrink-0"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500 hover:bg-red-600 rounded-lg text-xs md:text-sm font-bold transition-colors shadow-sm flex-shrink-0 cursor-pointer"
             >
               <LogOut className="w-4 h-4 md:w-5 md:h-5" />
               <span>Logout</span>
             </button>
           )}
         </div>
-        <div className="divide-y divide-slate-100">
-          {assessments.length === 0 && (
-            <p className="p-4 text-slate-500 text-center">Belum ada rekaman.</p>
-          )}
-          {assessments.map(item => {
-            const student = students[item.studentId];
-            const isSelected = selectedAssessment?.id === item.id;
-            return (
-              <div 
-                key={item.id} 
-                onClick={() => handleSelect(item)}
-                className={`p-4 cursor-pointer hover:bg-slate-50 transition-colors ${isSelected ? 'bg-blue-50 border-l-4 border-[#315588]' : ''}`}
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-bold text-slate-800">
-                      {student ? `${student.name} (Absen: ${student.absen})` : 'Anonim'}
-                    </h3>
-                    <p className="text-sm text-slate-500">Topik: {getTopicName(item.topicId)}</p>
+
+        {/* Tab Switcher */}
+        <div className="flex border-b border-slate-200 bg-slate-50 sticky top-[57px] md:top-[65px] z-10">
+          <button
+            onClick={() => setActiveTab('assessments')}
+            className={`flex-1 py-2.5 px-3 text-xs md:text-sm font-bold flex items-center justify-center gap-1.5 transition-colors border-b-2 cursor-pointer ${
+              activeTab === 'assessments'
+                ? 'border-[#315588] text-[#315588] bg-white'
+                : 'border-transparent text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            <span>Rekaman ({assessments.length})</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('students')}
+            className={`flex-1 py-2.5 px-3 text-xs md:text-sm font-bold flex items-center justify-center gap-1.5 transition-colors border-b-2 cursor-pointer ${
+              activeTab === 'students'
+                ? 'border-[#315588] text-[#315588] bg-white'
+                : 'border-transparent text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Data Siswa ({studentsList.length})</span>
+          </button>
+        </div>
+
+        <div className="divide-y divide-slate-100 flex-1 overflow-y-auto">
+          {activeTab === 'assessments' ? (
+            <>
+              {assessments.length === 0 && (
+                <p className="p-4 text-slate-500 text-center text-sm">Belum ada rekaman.</p>
+              )}
+              {assessments.map(item => {
+                const student = students[item.studentId];
+                const isSelected = selectedAssessment?.id === item.id;
+                return (
+                  <div 
+                    key={item.id} 
+                    onClick={() => handleSelect(item)}
+                    className={`p-4 cursor-pointer hover:bg-slate-50 transition-colors ${isSelected ? 'bg-blue-50 border-l-4 border-[#315588]' : ''}`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-bold text-slate-800">
+                          {student ? `${student.name} (Absen: ${student.absen})` : 'Anonim'}
+                        </h3>
+                        <p className="text-sm text-slate-500">Topik: {getTopicName(item.topicId)}</p>
+                      </div>
+                      {item.graded && (
+                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
+                          {item.score}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  {item.graded && (
-                    <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
-                      {item.score}
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+                );
+              })}
+            </>
+          ) : (
+            <>
+              {studentsList.length === 0 && (
+                <p className="p-4 text-slate-500 text-center text-sm">Belum ada siswa terdaftar.</p>
+              )}
+              {studentsList.map(st => {
+                const hasAssessment = assessments.some(a => a.studentId === st.id);
+                return (
+                  <div key={st.id} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                    <div>
+                      <h3 className="font-bold text-slate-800 text-sm md:text-base">
+                        {st.name} <span className="text-xs font-semibold text-slate-500">(Absen: {st.absen})</span>
+                      </h3>
+                      <span className={`inline-block mt-1 text-[10px] md:text-xs px-2 py-0.5 rounded-full font-bold ${
+                        hasAssessment ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'
+                      }`}>
+                        {hasAssessment ? 'Ada Rekaman' : 'Belum Ada Rekaman'}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => handleDeleteStudent(st)}
+                      title="Hapus Data Siswa"
+                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs font-bold"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span>Hapus</span>
+                    </button>
+                  </div>
+                );
+              })}
+            </>
+          )}
         </div>
       </div>
 

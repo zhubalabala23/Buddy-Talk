@@ -35,14 +35,28 @@ export const saveStudent = async (studentData) => {
   if (!nameSnapshot.empty) {
     const existingDoc = nameSnapshot.docs[0];
     const existingData = existingDoc.data();
+    const existingId = existingDoc.id;
     
-    // Jika namanya ada, cek apakah nomor absennya SAMA
-    if (existingData.absen === trimmedAbsen) {
-      // Cocok! Login berhasil.
-      return { id: existingDoc.id, ...existingData };
+    // Jika namanya ada dan nomor absennya SAMA -> Login langsung
+    if (String(existingData.absen).trim() === trimmedAbsen) {
+      return { id: existingId, ...existingData, name: trimmedName, absen: trimmedAbsen };
+    } 
+    
+    // Jika namanya ada, tapi nomor absennya BEDA:
+    // Cek apakah siswa ini punya rekaman/penilaian aktif di database
+    const assessmentsRef = collection(db, 'buddytalk_assessments');
+    const studentAssessmentsQuery = query(assessmentsRef, where("studentId", "==", existingId));
+    const studentAssessmentsSnap = await getDocs(studentAssessmentsQuery);
+
+    if (studentAssessmentsSnap.empty) {
+      // Siswa ini TIDAK punya rekaman (rekamannya sudah dihapus oleh guru / belum pernah merekam).
+      // Perbarui nomor absen siswa ini ke nomor absen yang baru dimasukkan!
+      const studentDocRef = doc(db, 'buddytalk_students', existingId);
+      await updateDoc(studentDocRef, { absen: trimmedAbsen });
+      return { id: existingId, ...existingData, name: trimmedName, absen: trimmedAbsen };
     } else {
-      // Namanya ada, tapi absennya BEDA. Tolak.
-      throw new Error(`Maaf, nama "${trimmedName}" sudah dipakai oleh siswa lain. Jika ini adalah kamu, pastikan Nomor Absen yang dimasukkan benar. Jika bukan, silakan tambahkan nama belakangmu agar tidak duplikat.`);
+      // Siswa ini MASIH punya rekaman aktif dengan nomor absen lain.
+      throw new Error(`Maaf, nama "${trimmedName}" sudah dipakai oleh siswa lain (Absen: ${existingData.absen}). Jika ini adalah kamu, masukkan Nomor Absen yang benar (${existingData.absen}).`);
     }
   }
 
@@ -51,11 +65,24 @@ export const saveStudent = async (studentData) => {
   const absenSnapshot = await getDocs(absenQuery);
   
   if (!absenSnapshot.empty) {
-    const existingData = absenSnapshot.docs[0].data();
-    throw new Error(`Nomor Absen "${trimmedAbsen}" sudah dipakai oleh ${existingData.name}!`);
+    const existingDoc = absenSnapshot.docs[0];
+    const existingData = existingDoc.data();
+    const existingId = existingDoc.id;
+
+    // Cek apakah pemilik nomor absen ini punya rekaman aktif
+    const assessmentsRef = collection(db, 'buddytalk_assessments');
+    const studentAssessmentsQuery = query(assessmentsRef, where("studentId", "==", existingId));
+    const studentAssessmentsSnap = await getDocs(studentAssessmentsQuery);
+
+    if (studentAssessmentsSnap.empty) {
+      // Pemilik absen lama tidak punya rekaman, hapus data lama yang tidak aktif tersebut
+      await deleteDoc(doc(db, 'buddytalk_students', existingId));
+    } else {
+      throw new Error(`Nomor Absen "${trimmedAbsen}" sedang digunakan oleh siswa "${existingData.name}".`);
+    }
   }
 
-  // 3. Jika nama & absen benar-benar baru, buat data baru
+  // 3. Jika nama & absen benar-benar baru (atau data lama tanpa rekaman sudah diperbarui)
   const newStudentRef = doc(collection(db, 'buddytalk_students'));
   const newStudent = { 
     id: newStudentRef.id,
@@ -124,30 +151,76 @@ export const getAssessments = async () => {
 export const getStudents = async () => {
   const studentsRef = collection(db, 'buddytalk_students');
   const querySnapshot = await getDocs(studentsRef);
-  return querySnapshot.docs.map(docSnapshot => docSnapshot.data());
+  return querySnapshot.docs.map(docSnapshot => ({
+    id: docSnapshot.id,
+    ...docSnapshot.data()
+  }));
 };
 
 export const deleteAssessment = async (id) => {
+  if (!id) return;
   const docRef = doc(db, 'buddytalk_assessments', id);
   await deleteDoc(docRef);
 };
 
-export const deleteStudentAndAssessments = async (studentId) => {
-  if (!studentId || studentId === 'anonymous') return;
+export const deleteStudentCompletely = async (studentOrId) => {
+  if (!studentOrId) return;
   
-  // 1. Delete all assessments for this student
+  const studentId = typeof studentOrId === 'string' ? studentOrId : studentOrId.id;
+  const studentName = typeof studentOrId === 'object' ? studentOrId.name : null;
+  
   const assessmentsRef = collection(db, 'buddytalk_assessments');
-  const q = query(assessmentsRef, where("studentId", "==", studentId));
-  const querySnapshot = await getDocs(q);
-  
-  const deletePromises = querySnapshot.docs.map(docSnapshot => 
-    deleteDoc(doc(db, 'buddytalk_assessments', docSnapshot.id))
-  );
-  await Promise.all(deletePromises);
-  
-  // 2. Delete the student document
-  const studentRef = doc(db, 'buddytalk_students', studentId);
-  await deleteDoc(studentRef);
+  const studentsRef = collection(db, 'buddytalk_students');
+
+  // 1. Hapus seluruh data penilaian / rekaman siswa dari buddytalk_assessments
+  if (studentId && studentId !== 'anonymous') {
+    try {
+      const q = query(assessmentsRef, where("studentId", "==", studentId));
+      const querySnapshot = await getDocs(q);
+      const deletePromises = querySnapshot.docs.map(docSnapshot => 
+        deleteDoc(doc(db, 'buddytalk_assessments', docSnapshot.id))
+      );
+      await Promise.all(deletePromises);
+    } catch (e) {
+      console.error("Error deleting student assessments:", e);
+    }
+  }
+
+  // 2. Hapus dokumen siswa dari buddytalk_students secara langsung berdasarkan Firestore Doc ID
+  if (studentId && studentId !== 'anonymous') {
+    try {
+      const studentRef = doc(db, 'buddytalk_students', studentId);
+      await deleteDoc(studentRef);
+    } catch (e) {
+      console.error("Error deleting student doc directly:", e);
+    }
+
+    // Juga hapus berdasarkan query field "id" == studentId (jika ada dokumen legacy)
+    try {
+      const qId = query(studentsRef, where("id", "==", studentId));
+      const snapId = await getDocs(qId);
+      const deleteIdPromises = snapId.docs.map(d => deleteDoc(doc(db, 'buddytalk_students', d.id)));
+      await Promise.all(deleteIdPromises);
+    } catch (e) {
+      console.error("Error deleting student doc by id field:", e);
+    }
+  }
+
+  // 3. Jika nama siswa diketahui, hapus dokumen apa pun di buddytalk_students yang bernama sama
+  if (studentName) {
+    try {
+      const qName = query(studentsRef, where("name", "==", studentName.trim()));
+      const snapName = await getDocs(qName);
+      const deleteNamePromises = snapName.docs.map(d => deleteDoc(doc(db, 'buddytalk_students', d.id)));
+      await Promise.all(deleteNamePromises);
+    } catch (e) {
+      console.error("Error deleting student doc by name:", e);
+    }
+  }
+};
+
+export const deleteStudentAndAssessments = async (studentId) => {
+  await deleteStudentCompletely(studentId);
 };
 
 export const getStudentAssessments = async (studentId) => {
