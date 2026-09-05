@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 import bgLandingNew from '../assets/background_landingpage/background_landingpage.webp';
 import burungBiru from '../assets/images/charachters_landingpage/burung_biru.webp';
 import cardKiriAtas from '../assets/images/charachters_landingpage/card kiri atas.webp';
@@ -12,32 +12,12 @@ import {
   MessageSquare, 
   Mic, 
   Star, 
-  Heart, 
   BookOpen, 
-  Smile, 
-  Users, 
-  ArrowRight, 
   Lightbulb,
   GraduationCap
 } from 'lucide-react';
 
 export default function LandingPage({ onStudentStart, onTeacherStart, onScoreDashboard }) {
-  const [activeTopic, setActiveTopic] = useState(null);
-  const topicsList = [
-    { id: 1, name: 'Sifat Jujur', char: 'Bima' },
-    { id: 2, name: 'Sifat Rajin', char: 'Sari' },
-    { id: 3, name: 'Sifat Ramah', char: 'Dodi' },
-    { id: 4, name: 'Sifat Pemberani', char: 'Nadia' },
-    { id: 5, name: 'Persahabatan', char: 'Wulan & Citra' }
-  ];
-
-  const handleTopicClick = (topic) => {
-    setActiveTopic(topic);
-    // Auto-dismiss toast after 3 seconds
-    setTimeout(() => {
-      setActiveTopic(null);
-    }, 3000);
-  };
 
   return (
     <motion.div 
@@ -381,71 +361,6 @@ export default function LandingPage({ onStudentStart, onTeacherStart, onScoreDas
             </motion.button>
           </div>
 
-          {/* 9. Right Signpost (Topics List) */}
-          {/* Title Badge banner */}
-          <div 
-            className="absolute z-20 bg-[#8b5cf6] text-white font-extrabold px-3 py-1 rounded-full shadow-md text-center flex items-center justify-center border-2 border-white"
-            style={{
-              left: '76%',
-              width: '13.5%',
-              top: '34%',
-              height: '5%',
-              fontSize: 'min(1.3vw, 15px)'
-            }}
-          >
-            Topik Cerita
-          </div>
-
-          {/* Topic buttons rendered absolutely matching the hotspot grid */}
-          {topicsList.map((topic, index) => {
-            const topPercent = 40.3 + (index * 8.9);
-            
-            const themes = [
-              { bg: 'bg-[#ecfdf5]', border: 'border-[#a7f3d0]', iconBg: 'bg-emerald-500', text: 'text-emerald-700', arrowBg: 'bg-[#10b981]', LucideIcon: Heart },
-              { bg: 'bg-[#eff6ff]', border: 'border-[#bfdbfe]', iconBg: 'bg-blue-500', text: 'text-blue-700', arrowBg: 'bg-[#3b82f6]', LucideIcon: BookOpen },
-              { bg: 'bg-[#faf5ff]', border: 'border-[#e9d5ff]', iconBg: 'bg-purple-500', text: 'text-purple-700', arrowBg: 'bg-[#8b5cf6]', LucideIcon: Smile },
-              { bg: 'bg-[#fff7ed]', border: 'border-[#fed7aa]', iconBg: 'bg-orange-500', text: 'text-orange-700', arrowBg: 'bg-[#f97316]', LucideIcon: Star },
-              { bg: 'bg-[#fff1f2]', border: 'border-[#fecdd3]', iconBg: 'bg-pink-500', text: 'text-pink-700', arrowBg: 'bg-[#ec4899]', LucideIcon: Users }
-            ];
-            const theme = themes[index] || themes[0];
-            const Icon = theme.LucideIcon;
-
-            return (
-              <button
-                key={topic.id}
-                onClick={() => handleTopicClick(topic)}
-                title={`Pilih ${topic.name}`}
-                className={`absolute flex items-center justify-between ${theme.bg} border-2 ${theme.border} rounded-2xl px-3 py-1 shadow-md hover:scale-[1.03] active:scale-[0.98] transition-all cursor-pointer group`}
-                style={{
-                  left: '72.4%',
-                  width: '21.3%',
-                  top: `${topPercent}%`,
-                  height: '7.1%',
-                }}
-              >
-                <div className="flex items-center gap-2 overflow-hidden w-full mr-1">
-                  {/* Circular Icon badge */}
-                  <div className={`w-[2.4vw] h-[2.4vw] min-w-[24px] min-h-[24px] max-w-[34px] max-h-[34px] rounded-full ${theme.iconBg} flex items-center justify-center shrink-0 shadow-inner`}>
-                    <Icon className="w-[55%] h-[55%] text-white" strokeWidth={2.5} />
-                  </div>
-                  
-                  <div className="text-left leading-tight truncate">
-                    <span className="block font-black text-slate-800" style={{ fontSize: 'min(1.1vw, 13px)' }}>
-                      {index + 1}. {topic.name}
-                    </span>
-                    <span className="block font-bold text-slate-500" style={{ fontSize: 'min(0.9vw, 11px)' }}>
-                      {topic.char}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Circular Arrow Badge */}
-                <div className={`w-[2.2vw] h-[2.2vw] min-w-[22px] min-h-[22px] max-w-[30px] max-h-[30px] rounded-full ${theme.arrowBg} flex items-center justify-center shrink-0 shadow-md group-hover:translate-x-0.5 transition-transform`}>
-                  <ArrowRight className="w-[55%] h-[55%] text-white" strokeWidth={3} />
-                </div>
-              </button>
-            );
-          })}
 
           {/* 10. Bottom Tips Bar */}
           <div 
@@ -507,22 +422,7 @@ export default function LandingPage({ onStudentStart, onTeacherStart, onScoreDas
         </div>
       </div>
 
-      {/* Interactive Toast Message for Topics */}
-      <AnimatePresence>
-        {activeTopic && (
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="fixed bottom-16 left-[50%] translate-x-[-50%] z-50 bg-[#315588] text-white px-6 py-4 rounded-2xl shadow-xl border border-white/10 text-center max-w-sm"
-          >
-            <h4 className="font-bold text-lg mb-1">Materi "{activeTopic.name}" Sedang Disiapkan! 🚀</h4>
-            <p className="text-xs text-blue-100 font-bold">
-              Ayo daftarkan dirimu dengan menekan tombol <strong>MULAI BELAJAR</strong> untuk mempelajari petualangan lingkungan terlebih dahulu!
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
     </motion.div>
   );
 }

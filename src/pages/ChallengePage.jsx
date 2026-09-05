@@ -9,6 +9,20 @@ import dodiImg from '../assets/images/dodi.webp';
 import nadiaImg from '../assets/images/nadia.webp';
 import wulanCitraImg from '../assets/images/wulan_citra.webp';
 
+// Import Picture Sorting Challenge WebP images
+import belajarBersamaImg from '../assets/image_challenge/belajar_bersama.webp';
+import bergosipImg from '../assets/image_challenge/bergosip.webp';
+import berkataJujurImg from '../assets/image_challenge/berkata_jujur.webp';
+import bertanggungJawabImg from '../assets/image_challenge/bertanggung_jawab.webp';
+import membantuTemanImg from '../assets/image_challenge/membantu_teman.webp';
+import membuangSampahImg from '../assets/image_challenge/membuang_sampah.webp';
+import mengembalikanBarangImg from '../assets/image_challenge/mengembalikan_barang_orang_lain.webp';
+import mengembalikanDompetImg from '../assets/image_challenge/mengembalikan_dompet.webp';
+import menghargaiOrangLainImg from '../assets/image_challenge/menghargai_orang_lain.webp';
+import menyelesaikanTugasImg from '../assets/image_challenge/menyelesaikan_tugas.webp';
+import menyontekImg from '../assets/image_challenge/menyontek.webp';
+import merusakBarangImg from '../assets/image_challenge/merusak_barang.webp';
+
 const charImages = {
   bima: bimaImg,
   sari: sariImg,
@@ -45,18 +59,18 @@ const challengesData = {
       incorrectLabel: "BUKAN PERILAKU JUJUR",
       incorrectDesc: "Anak berbohong, menyembunyikan kesalahan, atau melakukan hal yang tidak benar.",
       items: [
-        { id: "p1", text: "Mengembalikan dompet", emoji: "👛", isCorrectCategory: true },
-        { id: "p2", text: "Menyelesaikan tugas", emoji: "📝", isCorrectCategory: true },
-        { id: "p3", text: "Berkata jujur", emoji: "🗣️", isCorrectCategory: true },
-        { id: "p4", text: "Menyontek", emoji: "👀", isCorrectCategory: false },
-        { id: "p5", text: "Mengembalikan barang", emoji: "📦", isCorrectCategory: true },
-        { id: "p6", text: "Bertanggung jawab", emoji: "🛡️", isCorrectCategory: true },
-        { id: "p7", text: "Membuang sampah", emoji: "🗑️", isCorrectCategory: true },
-        { id: "p8", text: "Belajar bersama", emoji: "📖", isCorrectCategory: true },
-        { id: "p9", text: "Bergosip", emoji: "💬", isCorrectCategory: false },
-        { id: "p10", text: "Membantu teman", emoji: "🤝", isCorrectCategory: true },
-        { id: "p11", text: "Menghargai orang lain", emoji: "🙏", isCorrectCategory: true },
-        { id: "p12", text: "Merusak barang", emoji: "🔨", isCorrectCategory: false }
+        { id: "p1", text: "Mengembalikan dompet", image: mengembalikanDompetImg, emoji: "👛", isCorrectCategory: true },
+        { id: "p2", text: "Menyelesaikan tugas", image: menyelesaikanTugasImg, emoji: "📝", isCorrectCategory: true },
+        { id: "p3", text: "Berkata jujur", image: berkataJujurImg, emoji: "🗣️", isCorrectCategory: true },
+        { id: "p4", text: "Menyontek", image: menyontekImg, emoji: "👀", isCorrectCategory: false },
+        { id: "p5", text: "Mengembalikan barang", image: mengembalikanBarangImg, emoji: "📦", isCorrectCategory: true },
+        { id: "p6", text: "Bertanggung jawab", image: bertanggungJawabImg, emoji: "🛡️", isCorrectCategory: true },
+        { id: "p7", text: "Membuang sampah", image: membuangSampahImg, emoji: "🗑️", isCorrectCategory: true },
+        { id: "p8", text: "Belajar bersama", image: belajarBersamaImg, emoji: "📖", isCorrectCategory: true },
+        { id: "p9", text: "Bergosip", image: bergosipImg, emoji: "💬", isCorrectCategory: false },
+        { id: "p10", text: "Membantu teman", image: membantuTemanImg, emoji: "🤝", isCorrectCategory: true },
+        { id: "p11", text: "Menghargai orang lain", image: menghargaiOrangLainImg, emoji: "🙏", isCorrectCategory: true },
+        { id: "p12", text: "Merusak barang", image: merusakBarangImg, emoji: "🔨", isCorrectCategory: false }
       ]
     },
     storyPuzzle: {
@@ -820,7 +834,17 @@ export default function ChallengePage({ topic, onComplete, onNext, onBack, onSte
                         </div>
                       )}
 
-                      <span className="text-3xl md:text-4xl mt-1 select-none">{item.emoji}</span>
+                      {item.image ? (
+                        <div className="w-full flex-1 min-h-0 overflow-hidden rounded-xl bg-slate-100 flex items-center justify-center mb-1.5">
+                          <img 
+                            src={item.image} 
+                            alt={item.text} 
+                            className="w-full h-full object-cover" 
+                          />
+                        </div>
+                      ) : (
+                        <span className="text-3xl md:text-4xl mt-1 select-none">{item.emoji}</span>
+                      )}
                       
                       <span className="text-[10px] font-black text-slate-700 leading-tight mb-1">
                         {item.text}
