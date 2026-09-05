@@ -54,7 +54,7 @@ export default function SebabAkibat({ onHome }) {
 
       {/* Main Grid Content - Top Row: Card 1 (Left) & Card 2 (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        
+
         {/* CARD 1: Mengenal Kalimat Majemuk Sebab-Akibat */}
         <div className="bg-white rounded-3xl p-5 md:p-6 shadow-md border-2 border-slate-100 flex flex-col justify-between space-y-4 relative overflow-hidden">
           {/* Card Header */}
@@ -77,10 +77,10 @@ export default function SebabAkibat({ onHome }) {
             {/* Cause Box - Render full image without cropping text */}
             <div className="flex flex-col items-center text-center bg-white p-2 rounded-2xl border border-blue-200 shadow-sm w-full sm:w-56 overflow-hidden">
               <div className="w-full bg-amber-50/50 rounded-xl overflow-hidden border border-amber-200 flex items-center justify-center p-1">
-                <img 
-                  src={sebabImg} 
-                  alt="Sebab: Belajar dengan giat" 
-                  className="w-full h-auto max-h-56 object-contain rounded-lg" 
+                <img
+                  src={sebabImg}
+                  alt="Sebab: Belajar dengan giat"
+                  className="w-full h-auto max-h-56 object-contain rounded-lg"
                 />
               </div>
             </div>
@@ -92,10 +92,10 @@ export default function SebabAkibat({ onHome }) {
             {/* Effect Box - Render full image without cropping text */}
             <div className="flex flex-col items-center text-center bg-white p-2 rounded-2xl border border-blue-200 shadow-sm w-full sm:w-56 overflow-hidden">
               <div className="w-full bg-emerald-50/50 rounded-xl overflow-hidden border border-emerald-200 flex items-center justify-center p-1">
-                <img 
-                  src={akibatImg} 
-                  alt="Akibat: Mendapat nilai bagus" 
-                  className="w-full h-auto max-h-56 object-contain rounded-lg" 
+                <img
+                  src={akibatImg}
+                  alt="Akibat: Mendapat nilai bagus"
+                  className="w-full h-auto max-h-56 object-contain rounded-lg"
                 />
               </div>
             </div>
@@ -219,7 +219,7 @@ export default function SebabAkibat({ onHome }) {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 items-stretch">
           {/* 4 Example Sub-cards (Taking 4 out of 5 columns on desktop) */}
           <div className="lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            
+
             {/* Sub-card 1: Nina */}
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col justify-between space-y-3 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex items-start gap-2">
@@ -230,7 +230,7 @@ export default function SebabAkibat({ onHome }) {
                   Nina tidur terlalu larut, <span className="text-emerald-600 font-black">sehingga</span> ia bangun kesiangan.
                 </p>
               </div>
-              
+
               {/* Illustration: Nina */}
               <div className="w-full h-32 bg-indigo-50/70 rounded-xl overflow-hidden border border-indigo-100 p-1 flex items-center justify-center">
                 <img src={ninaImg} alt="Nina tidur terlalu larut" className="w-full h-full object-contain rounded-lg" />
@@ -252,7 +252,7 @@ export default function SebabAkibat({ onHome }) {
                   Raka minum air putih yang cukup <span className="text-amber-600 font-black">karena</span> ia haus setelah bermain.
                 </p>
               </div>
-              
+
               {/* Illustration: Raka */}
               <div className="w-full h-32 bg-amber-50/70 rounded-xl overflow-hidden border border-amber-100 p-1 flex items-center justify-center">
                 <img src={rakaImg} alt="Raka minum air putih" className="w-full h-full object-contain rounded-lg" />
@@ -274,7 +274,7 @@ export default function SebabAkibat({ onHome }) {
                   Siti menyiram tanaman setiap pagi, <span className="text-emerald-600 font-black">sehingga</span> tanamannya tumbuh subur.
                 </p>
               </div>
-              
+
               {/* Illustration: Siti */}
               <div className="w-full h-32 bg-emerald-50/70 rounded-xl overflow-hidden border border-emerald-100 p-1 flex items-center justify-center">
                 <img src={sitiImg} alt="Siti menyiram tanaman" className="w-full h-full object-contain rounded-lg" />
@@ -296,7 +296,7 @@ export default function SebabAkibat({ onHome }) {
                   Dodi rajin belajar setiap hari <span className="text-amber-600 font-black">karena</span> ingin meraih cita-citanya.
                 </p>
               </div>
-              
+
               {/* Illustration: Dodi */}
               <div className="w-full h-32 bg-purple-50/70 rounded-xl overflow-hidden border border-purple-100 p-1 flex items-center justify-center">
                 <img src={dodiImg} alt="Dodi rajin belajar" className="w-full h-full object-contain rounded-lg" />
