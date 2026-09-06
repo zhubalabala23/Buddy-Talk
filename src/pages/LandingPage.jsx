@@ -9,9 +9,6 @@ import karakterUngu from '../assets/images/charachters_landingpage/karakter_ungu
 import kucing from '../assets/images/charachters_landingpage/kucing.webp';
 
 import { 
-  MessageSquare, 
-  Mic, 
-  Star, 
   BookOpen, 
   Lightbulb,
   GraduationCap
@@ -175,75 +172,7 @@ export default function LandingPage({ onStudentStart, onTeacherStart, onScoreDas
             }}
           />
 
-          {/* 4. Left Signpost Menu Items */}
-          <div 
-            className="absolute z-20 flex flex-col justify-between"
-            style={{
-              left: '11.8%',
-              width: '15.5%',
-              top: '33.0%',
-              height: '31.0%'
-            }}
-          >
-            {/* Option 1: Belajar dari Cerita */}
-            <div 
-              className="flex items-center gap-3 bg-[#fef5ec] border-2 border-[#e9cfb3] rounded-[22px] p-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer group"
-              style={{ height: '28%' }}
-            >
-              <div className="w-[2.4vw] h-[2.4vw] min-w-[28px] min-h-[28px] rounded-full bg-[#9c78d6] flex items-center justify-center shrink-0 shadow-inner">
-                <MessageSquare className="w-[50%] h-[50%] text-white" strokeWidth={2.5} />
-              </div>
-              <span className="font-black text-[#0f2942] leading-tight" style={{ fontSize: 'min(1.1vw, 13.5px)' }}>
-                Belajar dari Cerita
-              </span>
-            </div>
 
-            {/* Option 2: Latihan Berbicara */}
-            <div 
-              className="flex items-center gap-3 bg-[#fef5ec] border-2 border-[#e9cfb3] rounded-[22px] p-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer group"
-              style={{ height: '28%' }}
-            >
-              <div className="w-[2.4vw] h-[2.4vw] min-w-[28px] min-h-[28px] rounded-full bg-[#50a877] flex items-center justify-center shrink-0 shadow-inner">
-                <Mic className="w-[50%] h-[50%] text-white" strokeWidth={2.5} />
-              </div>
-              <span className="font-black text-[#0f2942] leading-tight" style={{ fontSize: 'min(1.1vw, 13.5px)' }}>
-                Latihan Berbicara
-              </span>
-            </div>
-
-            {/* Option 3: Jadi pribadi yang lebih baik */}
-            <div 
-              className="flex items-center gap-3 bg-[#fef5ec] border-2 border-[#e9cfb3] rounded-[22px] p-2 shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer group"
-              style={{ height: '28%' }}
-            >
-              <div className="w-[2.4vw] h-[2.4vw] min-w-[28px] min-h-[28px] rounded-full bg-[#f2b331] flex items-center justify-center shrink-0 shadow-inner">
-                <Star className="w-[50%] h-[50%] text-white fill-white" strokeWidth={2.5} />
-              </div>
-              <span className="font-black text-[#0f2942] leading-tight" style={{ fontSize: 'min(1.1vw, 13.5px)' }}>
-                Jadi pribadi yang lebih baik
-              </span>
-            </div>
-          </div>
-
-          {/* 5. Bottom-Left Quote Board Text */}
-          <div 
-            className="absolute z-20 flex items-center justify-center"
-            style={{
-              left: '17.2%',
-              width: '11.5%',
-              top: '71.5%',
-              height: '9.0%',
-            }}
-          >
-            <p 
-              className="font-black text-[#53321d] leading-snug text-center"
-              style={{ fontSize: 'min(1.05vw, 12px)' }}
-            >
-              “Setiap kata baik,<br />
-              adalah langkah kecil<br />
-              menjadi hebat. 💖”
-            </p>
-          </div>
 
           {/* 6. Speech Bubble (Center Top) */}
           <motion.div 
