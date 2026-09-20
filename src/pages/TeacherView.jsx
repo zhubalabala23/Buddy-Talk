@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { getAssessments, updateAssessment, getStudents, deleteAssessment, deleteStudentAndAssessments, deleteStudentCompletely, updateStudentProgress } from '../db';
-import { Play, Pause, CheckCircle2, ChevronRight, Save, LogOut, Trash2, ChevronLeft, Home, Users, FileText } from 'lucide-react';
+import { getAssessments, updateAssessment, getStudents, deleteAssessment, deleteStudentAndAssessments, deleteStudentCompletely, updateStudentProgress, loadAudioForAssessment } from '../db';
+import { Play, Pause, CheckCircle2, ChevronRight, Save, LogOut, Trash2, ChevronLeft, Home, Users, FileText, Loader2 } from 'lucide-react';
 import { topics } from '../data';
 
 const INDICATORS = [
@@ -38,6 +38,7 @@ export default function TeacherView({ onLogout, onHome }) {
   const [studentsList, setStudentsList] = useState([]);
   const [activeTab, setActiveTab] = useState('assessments'); // 'assessments' | 'students'
   const [selectedAssessment, setSelectedAssessment] = useState(null);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const [criteria, setCriteria] = useState({
     c1: 4,
     c2: 4,
@@ -63,7 +64,7 @@ export default function TeacherView({ onLogout, onHome }) {
     setAssessments(data);
   };
 
-  const handleSelect = (assessment) => {
+  const handleSelect = async (assessment) => {
     setSelectedAssessment(assessment);
     const existing = assessment.criteria || {};
     
@@ -81,6 +82,19 @@ export default function TeacherView({ onLogout, onHome }) {
       c4: parseVal(existing.c4),
       c5: parseVal(existing.c5)
     });
+
+    // Jika audio tersimpan via chunks atau belum berwujud Blob, muat secara asinkron
+    if (!assessment.audioBlob && (assessment.audioChunkCount > 0 || assessment.hasAudio || assessment.audioBase64)) {
+      setIsLoadingAudio(true);
+      try {
+        const blob = await loadAudioForAssessment(assessment);
+        setSelectedAssessment(prev => (prev && prev.id === assessment.id) ? { ...prev, audioBlob: blob } : prev);
+      } catch (err) {
+        console.error("Gagal memuat rekaman audio siswa:", err);
+      } finally {
+        setIsLoadingAudio(false);
+      }
+    }
   };
 
   const handleScoreChange = (key, value) => {
@@ -328,7 +342,12 @@ export default function TeacherView({ onLogout, onHome }) {
             
             <div className="bg-slate-100 p-4 rounded-xl mb-6 md:mb-8">
               <p className="text-sm text-slate-500 mb-2">Suara Siswa:</p>
-              {selectedAssessment.audioBlob ? (
+              {isLoadingAudio ? (
+                <div className="flex items-center gap-2 text-slate-500 py-3">
+                  <Loader2 className="w-5 h-5 animate-spin text-[#315588]" />
+                  <span className="text-sm font-medium">Memuat rekaman audio siswa...</span>
+                </div>
+              ) : selectedAssessment.audioBlob ? (
                 <audio controls src={URL.createObjectURL(selectedAssessment.audioBlob)} className="w-full h-10 md:h-14" />
               ) : (
                 <p className="text-red-500">Audio tidak tersedia.</p>

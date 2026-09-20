@@ -1256,43 +1256,116 @@ function VoiceAnswer({ topic, studentInfo, onFinish, onHome, hasSubmitted }) {
   const [audioBlob, setAudioBlob] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
+  const timerRef = useRef(null);
+
+  const MAX_RECORDING_SECONDS = 90; // Batas durasi rekaman aman (1 menit 30 detik)
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, []);
+
+  const formatTime = (secs) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
+  };
+
+  const getSupportedMimeType = () => {
+    if (typeof MediaRecorder === 'undefined') return '';
+    const candidates = [
+      'audio/webm;codecs=opus',
+      'audio/webm',
+      'audio/ogg;codecs=opus',
+      'audio/mp4'
+    ];
+    for (const c of candidates) {
+      if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(c)) {
+        return c;
+      }
+    }
+    return '';
+  };
+
+  const stopRecording = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
 
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorderRef.current = new MediaRecorder(stream);
+      // Setup audio stream: 1 channel (mono) hemat ukuran 50%, 16kHz speech standard, echo/noise suppression
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          channelCount: 1,
+          sampleRate: 16000,
+          echoCancellation: true,
+          noiseSuppression: true
+        } 
+      });
+
+      const mimeType = getSupportedMimeType();
+      const recorderOptions = {
+        audioBitsPerSecond: 24000 // 24 kbps: suara sangat jernih namun ukuran hanya ~3 KB/detik (1 menit hanya ~180 KB)
+      };
+      if (mimeType) {
+        recorderOptions.mimeType = mimeType;
+      }
+
+      mediaRecorderRef.current = new MediaRecorder(stream, recorderOptions);
       
       mediaRecorderRef.current.ondataavailable = (e) => {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
       
       mediaRecorderRef.current.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+        const finalMime = mediaRecorderRef.current?.mimeType || mimeType || 'audio/webm';
+        const blob = new Blob(chunksRef.current, { type: finalMime });
         const url = URL.createObjectURL(blob);
         setAudioBlob(blob);
         setAudioUrl(url);
         chunksRef.current = [];
         
         stream.getTracks().forEach(track => track.stop());
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
       };
 
       chunksRef.current = [];
-      mediaRecorderRef.current.start();
+      mediaRecorderRef.current.start(1000); // Kumpulkan potongan tiap 1 detik
       setIsRecording(true);
+      setRecordingSeconds(0);
       setAudioUrl(null);
       setAudioBlob(null);
+
+      // Jalankan live timer
+      if (timerRef.current) clearInterval(timerRef.current);
+      timerRef.current = setInterval(() => {
+        setRecordingSeconds(prev => {
+          if (prev + 1 >= MAX_RECORDING_SECONDS) {
+            stopRecording();
+            return MAX_RECORDING_SECONDS;
+          }
+          return prev + 1;
+        });
+      }, 1000);
     } catch (err) {
       console.error("Error accessing microphone", err);
-      alert("Please allow microphone access to record your answer!");
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
+      alert("Mohon izinkan akses mikrofon untuk merekam jawabanmu!");
     }
   };
 
@@ -1396,8 +1469,10 @@ function VoiceAnswer({ topic, studentInfo, onFinish, onHome, hasSubmitted }) {
               )}
             </motion.button>
             
-            <p className={`font-medium ${isRecording ? 'text-red-400 animate-pulse' : 'text-slate-400'}`}>
-              {isRecording ? 'Merekam suara ajaibmu...' : 'Ketuk untuk merekam jawaban'}
+            <p className={`font-medium text-sm md:text-base ${isRecording ? 'text-red-500 font-bold animate-pulse' : 'text-slate-400'}`}>
+              {isRecording 
+                ? `🔴 Merekam suara... (${formatTime(recordingSeconds)} / ${formatTime(MAX_RECORDING_SECONDS)})` 
+                : 'Ketuk untuk merekam jawaban'}
             </p>
           </div>
         )}

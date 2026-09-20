@@ -14,7 +14,9 @@ const blobToBase64 = (blob) => {
 // Helper to convert Base64 back to Blob
 const base64ToBlob = (base64, mimeType = 'audio/webm') => {
   if (!base64) return null;
-  const byteString = atob(base64.split(',')[1]);
+  const parts = base64.split(',');
+  const rawString = parts.length > 1 ? parts[1] : parts[0];
+  const byteString = atob(rawString);
   const ab = new ArrayBuffer(byteString.length);
   const ia = new Uint8Array(ab);
   for (let i = 0; i < byteString.length; i++) {
@@ -22,6 +24,11 @@ const base64ToBlob = (base64, mimeType = 'audio/webm') => {
   }
   return new Blob([ab], { type: mimeType });
 };
+
+// Firestore hard limit is ~1,048,487 bytes per property/document.
+// If base64 string exceeds 700,000 chars (~700 KB), split into 350,000 chars chunks in subcollection.
+const AUDIO_CHUNK_SIZE = 350000;
+const AUDIO_MAX_INLINE_SIZE = 700000;
 
 export const saveStudent = async (studentData) => {
   const studentsRef = collection(db, 'buddytalk_students');
@@ -109,18 +116,80 @@ export const saveAssessment = async (assessment) => {
   }
 
   let base64Audio = null;
-  if (assessment.audioBlob) {
-    base64Audio = await blobToBase64(assessment.audioBlob);
+  const rawBlob = assessment.audioBlob;
+  const audioMimeType = rawBlob?.type || 'audio/webm';
+
+  if (rawBlob) {
+    base64Audio = await blobToBase64(rawBlob);
   }
+
+  const isChunked = base64Audio && base64Audio.length > AUDIO_MAX_INLINE_SIZE;
   
   const assessmentData = {
     ...assessment,
     audioBlob: null, // Remove the raw blob before saving to Firestore
-    audioBase64: base64Audio
+    audioMimeType,
+    hasAudio: !!base64Audio,
+    audioBase64: isChunked ? null : base64Audio,
+    audioChunkCount: 0
   };
 
-  const docRef = await addDoc(assessmentsRef, assessmentData);
-  return docRef.id;
+  if (isChunked) {
+    const chunks = [];
+    for (let i = 0; i < base64Audio.length; i += AUDIO_CHUNK_SIZE) {
+      chunks.push(base64Audio.slice(i, i + AUDIO_CHUNK_SIZE));
+    }
+    assessmentData.audioChunkCount = chunks.length;
+
+    // 1. Create main assessment doc
+    const docRef = await addDoc(assessmentsRef, assessmentData);
+    
+    // 2. Save audio chunks into subcollection 'audio_chunks'
+    const chunksRef = collection(db, 'buddytalk_assessments', docRef.id, 'audio_chunks');
+    const chunkPromises = chunks.map((chunkStr, idx) => 
+      setDoc(doc(chunksRef, `chunk_${idx}`), {
+        index: idx,
+        chunk: chunkStr
+      })
+    );
+    await Promise.all(chunkPromises);
+    return docRef.id;
+  } else {
+    const docRef = await addDoc(assessmentsRef, assessmentData);
+    return docRef.id;
+  }
+};
+
+// Helper to load audio blob for an assessment (inline or chunked)
+export const loadAudioForAssessment = async (assessment) => {
+  if (!assessment) return null;
+  if (assessment.audioBlob) return assessment.audioBlob;
+  
+  const mime = assessment.audioMimeType || 'audio/webm';
+
+  // 1. Check inline base64
+  if (assessment.audioBase64) {
+    return base64ToBlob(assessment.audioBase64, mime);
+  }
+
+  // 2. Check chunked subcollection
+  if (assessment.audioChunkCount > 0 && assessment.id) {
+    try {
+      const chunksRef = collection(db, 'buddytalk_assessments', assessment.id, 'audio_chunks');
+      const snap = await getDocs(chunksRef);
+      if (!snap.empty) {
+        const chunkList = [];
+        snap.forEach(d => chunkList.push(d.data()));
+        chunkList.sort((a, b) => a.index - b.index);
+        const fullBase64 = chunkList.map(c => c.chunk).join('');
+        return base64ToBlob(fullBase64, mime);
+      }
+    } catch (e) {
+      console.error("Gagal memuat potongan audio:", e);
+    }
+  }
+
+  return null;
 };
 
 export const updateAssessment = async (assessment) => {
@@ -142,8 +211,8 @@ export const getAssessments = async () => {
     return {
       ...data,
       id: docSnapshot.id,
-      // Recreate the blob so TeacherView can play it
-      audioBlob: data.audioBase64 ? base64ToBlob(data.audioBase64) : null
+      // If inline audio exists, provide blob directly; if chunked, it will load on select
+      audioBlob: data.audioBase64 ? base64ToBlob(data.audioBase64, data.audioMimeType || 'audio/webm') : null
     };
   });
 };
@@ -159,6 +228,20 @@ export const getStudents = async () => {
 
 export const deleteAssessment = async (id) => {
   if (!id) return;
+
+  // 1. Hapus subcollection audio_chunks jika ada
+  try {
+    const chunksRef = collection(db, 'buddytalk_assessments', id, 'audio_chunks');
+    const chunksSnap = await getDocs(chunksRef);
+    if (!chunksSnap.empty) {
+      const deletePromises = chunksSnap.docs.map(cDoc => deleteDoc(cDoc.ref));
+      await Promise.all(deletePromises);
+    }
+  } catch (e) {
+    console.error("Error deleting audio chunks:", e);
+  }
+
+  // 2. Hapus dokumen penilaian utama
   const docRef = doc(db, 'buddytalk_assessments', id);
   await deleteDoc(docRef);
 };
@@ -172,13 +255,13 @@ export const deleteStudentCompletely = async (studentOrId) => {
   const assessmentsRef = collection(db, 'buddytalk_assessments');
   const studentsRef = collection(db, 'buddytalk_students');
 
-  // 1. Hapus seluruh data penilaian / rekaman siswa dari buddytalk_assessments
+  // 1. Hapus seluruh data penilaian / rekaman siswa dari buddytalk_assessments (termasuk chunk rekaman)
   if (studentId && studentId !== 'anonymous') {
     try {
       const q = query(assessmentsRef, where("studentId", "==", studentId));
       const querySnapshot = await getDocs(q);
       const deletePromises = querySnapshot.docs.map(docSnapshot => 
-        deleteDoc(doc(db, 'buddytalk_assessments', docSnapshot.id))
+        deleteAssessment(docSnapshot.id)
       );
       await Promise.all(deletePromises);
     } catch (e) {
