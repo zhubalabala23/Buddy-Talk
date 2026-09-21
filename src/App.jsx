@@ -1261,7 +1261,7 @@ function VoiceAnswer({ topic, studentInfo, onFinish, onHome, hasSubmitted }) {
   const chunksRef = useRef([]);
   const timerRef = useRef(null);
 
-  const MAX_RECORDING_SECONDS = 180; // Batas durasi rekaman maksimal (3 menit)
+  const MAX_RECORDING_SECONDS = 300; // Batas durasi rekaman maksimal (5 menit)
 
   useEffect(() => {
     return () => {
