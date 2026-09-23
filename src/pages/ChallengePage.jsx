@@ -23,6 +23,58 @@ import menyelesaikanTugasImg from '../assets/image_challenge/menyelesaikan_tugas
 import menyontekImg from '../assets/image_challenge/menyontek.webp';
 import merusakBarangImg from '../assets/image_challenge/merusak_barang.webp';
 
+// Import Picture Sorting Challenge 2 (Sari - Sifat Rajin) WebP images
+import c2BelajarBersamaImg from '../assets/image_challenge2/belajar_bersama.webp';
+import c2BermainGameImg from '../assets/image_challenge2/bermain_game.webp';
+import c2BermainHpImg from '../assets/image_challenge2/bermain_hp.webp';
+import c2DatangPagiImg from '../assets/image_challenge2/datang_pagi.webp';
+import c2DatangTerlambatImg from '../assets/image_challenge2/datang_terlambat.webp';
+import c2MembacaBukuImg from '../assets/image_challenge2/membaca_buku_dimalam_hari.webp';
+import c2MengerjakanPrImg from '../assets/image_challenge2/mengerjakan_pr.webp';
+import c2MengulangPelajaranImg from '../assets/image_challenge2/mengulang_pelajaran.webp';
+import c2MenundaMengerjakanPrImg from '../assets/image_challenge2/menunda_mengerjakan_pr.webp';
+import c2MerapihkanBukuImg from '../assets/image_challenge2/merapihkan_buku.webp';
+import c2TidakMengerjakanTugasImg from '../assets/image_challenge2/tidak_mengerjakan_tugas.webp';
+import c2TidurDikelasImg from '../assets/image_challenge2/tidur_dikelas.webp';
+
+// Import Picture Sorting Challenge 3 (Dodi - Sifat Ramah) WebP images
+import c3BermukaMerahImg from '../assets/image_challenge3/bermuka_merah.webp';
+import c3MarahKepadaTemanImg from '../assets/image_challenge3/marah_kepada_teman.webp';
+import c3MembantuMenemukanKelasImg from '../assets/image_challenge3/membantu_menemukan_kelas.webp';
+import c3MembelakangiMuridBaruImg from '../assets/image_challenge3/membelakangi_murid_baru.webp';
+import c3MengabaikanTemanImg from '../assets/image_challenge3/mengabaikan_teman.webp';
+import c3MengajakTemanBermainImg from '../assets/image_challenge3/mengajak_teman_bermain.webp';
+import c3MengejekTemanImg from '../assets/image_challenge3/mengejek_teman.webp';
+import c3MengucapSalamImg from '../assets/image_challenge3/mengucap_salam.webp';
+import c3MenolongMuridBaruImg from '../assets/image_challenge3/menolong_murid_baru.webp';
+import c3MenyapaSatpamImg from '../assets/image_challenge3/menyapa_satpam.webp';
+import c3TersenyumKepadaTemanImg from '../assets/image_challenge3/tersenyum_kepada_teman.webp';
+import c3TidakMauMenyapaImg from '../assets/image_challenge3/tidak_mau_menyapa.webp';
+
+// Import Picture Sorting Challenge 4 (Nadia - Sifat Pemberani) WebP images
+import c4BeraniBerbicaraImg from '../assets/image_challenge4/berani_berbicara_depan_umum.webp';
+import c4BeraniMencobaImg from '../assets/image_challenge4/berani_mencoba_hal_baru.webp';
+import c4BeraniMengemukakanImg from '../assets/image_challenge4/berani_mengemukakan_pendapat.webp';
+import c4DiamPadahalTahuImg from '../assets/image_challenge4/diam_padahal_tahu_jawabanya.webp';
+import c4MembantuTemanKesulitanImg from '../assets/image_challenge4/membantu_teman_saat_kesulitan.webp';
+import c4MenakutNakutiImg from '../assets/image_challenge4/menakut_nakuti_teman.webp';
+import c4MengangkatTanganImg from '../assets/image_challenge4/mengangkat_tangan_menjawab_pertanyaan.webp';
+import c4MengejekTemanImg from '../assets/image_challenge4/mengejek_teman.webp';
+import c4MenontonSajaImg from '../assets/image_challenge4/menonton_saja_saat_ada_masalah.webp';
+import c4MenyelamatkanKucingImg from '../assets/image_challenge4/menyelamatkan_anak_kucing.webp';
+import c4TakutMencobaImg from '../assets/image_challenge4/takut_mencoba_hal_baru.webp';
+import c4TidakBeraniMengemukakanImg from '../assets/image_challenge4/tidak_berani_mengemukakan_pendapat.webp';
+
+// Import Picture Sorting Challenge 5 (Wulan & Citra - Sifat Peduli) WebP images
+import c5BerbagiBekalImg from '../assets/image_challenge5/berbagi_bekal_dengan_teman.webp';
+import c5BernyanyiBersamaImg from '../assets/image_challenge5/bernyanyi_bersama.webp';
+import c5MembantuTemanBelajarImg from '../assets/image_challenge5/membantu_teman_belajar.webp';
+import c5MemberiSemangatImg from '../assets/image_challenge5/memberi_semangat_teman_gugup.webp';
+import c5MengabaikanTemanImg from '../assets/image_challenge5/mengabaikan_teman.webp';
+import c5MengejekTemanImg from '../assets/image_challenge5/mengejek_teman.webp';
+import c5MengerjakanTugasBersamaImg from '../assets/image_challenge5/mengerjakan_tugas_bersama.webp';
+import c5TidakMauMembantuImg from '../assets/image_challenge5/tidak_mau_membantu_teman_belajar.webp';
+
 const charImages = {
   bima: bimaImg,
   sari: sariImg,
@@ -127,18 +179,18 @@ const challengesData = {
       incorrectLabel: "BUKAN PERILAKU RAJIN",
       incorrectDesc: "Anak suka menunda pekerjaan, malas belajar, atau tidak bertanggung jawab terhadap tugasnya.",
       items: [
-        { id: "p1", text: "Membaca buku tiap malam", emoji: "📚", isCorrectCategory: true },
-        { id: "p2", text: "Datang paling pagi ke sekolah", emoji: "🏫", isCorrectCategory: true },
-        { id: "p3", text: "Mengerjakan PR", emoji: "✍️", isCorrectCategory: true },
-        { id: "p4", text: "Merapikan buku", emoji: "🎒", isCorrectCategory: true },
-        { id: "p5", text: "Belajar bersama teman", emoji: "🧑‍🤝‍🧑", isCorrectCategory: true },
-        { id: "p6", text: "Mengulang pelajaran", emoji: "🔄", isCorrectCategory: true },
-        { id: "p7", text: "Bermain HP saat belajar", emoji: "📱", isCorrectCategory: false },
-        { id: "p8", text: "Tidur saat guru menjelaskan", emoji: "😴", isCorrectCategory: false },
-        { id: "p9", text: "Menunda mengerjakan PR", emoji: "⏳", isCorrectCategory: false },
-        { id: "p10", text: "Bermain game terus", emoji: "🎮", isCorrectCategory: false },
-        { id: "p11", text: "Datang terlambat", emoji: "⏰", isCorrectCategory: false },
-        { id: "p12", text: "Tidak mengerjakan tugas", emoji: "❌", isCorrectCategory: false }
+        { id: "p1", text: "Membaca buku tiap malam", image: c2MembacaBukuImg, emoji: "📚", isCorrectCategory: true },
+        { id: "p2", text: "Datang paling pagi ke sekolah", image: c2DatangPagiImg, emoji: "🏫", isCorrectCategory: true },
+        { id: "p3", text: "Mengerjakan PR", image: c2MengerjakanPrImg, emoji: "✍️", isCorrectCategory: true },
+        { id: "p4", text: "Merapikan buku", image: c2MerapihkanBukuImg, emoji: "🎒", isCorrectCategory: true },
+        { id: "p5", text: "Belajar bersama teman", image: c2BelajarBersamaImg, emoji: "🧑‍🤝‍🧑", isCorrectCategory: true },
+        { id: "p6", text: "Mengulang pelajaran", image: c2MengulangPelajaranImg, emoji: "🔄", isCorrectCategory: true },
+        { id: "p7", text: "Bermain HP saat belajar", image: c2BermainHpImg, emoji: "📱", isCorrectCategory: false },
+        { id: "p8", text: "Tidur saat guru menjelaskan", image: c2TidurDikelasImg, emoji: "😴", isCorrectCategory: false },
+        { id: "p9", text: "Menunda mengerjakan PR", image: c2MenundaMengerjakanPrImg, emoji: "⏳", isCorrectCategory: false },
+        { id: "p10", text: "Bermain game terus", image: c2BermainGameImg, emoji: "🎮", isCorrectCategory: false },
+        { id: "p11", text: "Datang terlambat", image: c2DatangTerlambatImg, emoji: "⏰", isCorrectCategory: false },
+        { id: "p12", text: "Tidak mengerjakan tugas", image: c2TidakMengerjakanTugasImg, emoji: "❌", isCorrectCategory: false }
       ]
     },
     storyPuzzle: {
@@ -199,18 +251,18 @@ const challengesData = {
       incorrectLabel: "BUKAN PERILAKU RAMAH",
       incorrectDesc: "Anak mengabaikan, mengejek, atau membuat orang lain merasa sedih.",
       items: [
-        { id: "p1", text: "Menyapa satpam sekolah", emoji: "👮", isCorrectCategory: true },
-        { id: "p2", text: "Menolong murid baru", emoji: "🤝", isCorrectCategory: true },
-        { id: "p3", text: "Mengajak teman bermain", emoji: "⚽", isCorrectCategory: true },
-        { id: "p4", text: "Tersenyum kepada teman", emoji: "😊", isCorrectCategory: true },
-        { id: "p5", text: "Mengucapkan salam", emoji: "👋", isCorrectCategory: true },
-        { id: "p6", text: "Membantu teman menemukan kelas", emoji: "🏫", isCorrectCategory: true },
-        { id: "p7", text: "Mengejek teman", emoji: "😜", isCorrectCategory: false },
-        { id: "p8", text: "Membelakangi murid baru", emoji: "😒", isCorrectCategory: false },
-        { id: "p9", text: "Bertengkar", emoji: "😠", isCorrectCategory: false },
-        { id: "p10", text: "Tidak mau menyapa", emoji: "🔕", isCorrectCategory: false },
-        { id: "p11", text: "Bermuka marah", emoji: "😡", isCorrectCategory: false },
-        { id: "p12", text: "Mengabaikan teman", emoji: "🙄", isCorrectCategory: false }
+        { id: "p1", text: "Menyapa satpam sekolah", image: c3MenyapaSatpamImg, emoji: "👮", isCorrectCategory: true },
+        { id: "p2", text: "Menolong murid baru", image: c3MenolongMuridBaruImg, emoji: "🤝", isCorrectCategory: true },
+        { id: "p3", text: "Mengajak teman bermain", image: c3MengajakTemanBermainImg, emoji: "⚽", isCorrectCategory: true },
+        { id: "p4", text: "Tersenyum kepada teman", image: c3TersenyumKepadaTemanImg, emoji: "😊", isCorrectCategory: true },
+        { id: "p5", text: "Mengucapkan salam", image: c3MengucapSalamImg, emoji: "👋", isCorrectCategory: true },
+        { id: "p6", text: "Membantu teman menemukan kelas", image: c3MembantuMenemukanKelasImg, emoji: "🏫", isCorrectCategory: true },
+        { id: "p7", text: "Mengejek teman", image: c3MengejekTemanImg, emoji: "😜", isCorrectCategory: false },
+        { id: "p8", text: "Membelakangi murid baru", image: c3MembelakangiMuridBaruImg, emoji: "😒", isCorrectCategory: false },
+        { id: "p9", text: "Bertengkar", image: c3MarahKepadaTemanImg, emoji: "😠", isCorrectCategory: false },
+        { id: "p10", text: "Tidak mau menyapa", image: c3TidakMauMenyapaImg, emoji: "🔕", isCorrectCategory: false },
+        { id: "p11", text: "Bermuka marah", image: c3BermukaMerahImg, emoji: "😡", isCorrectCategory: false },
+        { id: "p12", text: "Mengabaikan teman", image: c3MengabaikanTemanImg, emoji: "🙄", isCorrectCategory: false }
       ]
     },
     storyPuzzle: {
@@ -270,18 +322,18 @@ const challengesData = {
       incorrectLabel: "BUKAN PERILAKU PEMBERANI",
       incorrectDesc: "Anak mudah takut, tidak berani mencoba, dan tidak percaya diri.",
       items: [
-        { id: "p1", text: "Mengangkat tangan menjawab pertanyaan", emoji: "🙋", isCorrectCategory: true },
-        { id: "p2", text: "Berani mencoba hal baru", emoji: "🔬", isCorrectCategory: true },
-        { id: "p3", text: "Berani mengemukakan pendapat", emoji: "🗣️", isCorrectCategory: true },
-        { id: "p4", text: "Membantu teman saat kesulitan", emoji: "🤝", isCorrectCategory: true },
-        { id: "p5", text: "Menyelamatkan anak kucing", emoji: "🐱", isCorrectCategory: true },
-        { id: "p6", text: "Berani berbicara di depan umum", emoji: "🎤", isCorrectCategory: true },
-        { id: "p7", text: "Takut mencoba hal baru", emoji: "🫣", isCorrectCategory: false },
-        { id: "p8", text: "Diam padahal tahu jawabannya", emoji: "🤫", isCorrectCategory: false },
-        { id: "p9", text: "Mengejek teman", emoji: "😜", isCorrectCategory: false },
-        { id: "p10", text: "Menakut-nakuti teman", emoji: "👿", isCorrectCategory: false },
-        { id: "p11", text: "Menonton saja saat ada masalah", emoji: "👀", isCorrectCategory: false },
-        { id: "p12", text: "Tidak berani mengemukakan pendapat", emoji: "🤐", isCorrectCategory: false }
+        { id: "p1", text: "Mengangkat tangan menjawab pertanyaan", image: c4MengangkatTanganImg, emoji: "🙋", isCorrectCategory: true },
+        { id: "p2", text: "Berani mencoba hal baru", image: c4BeraniMencobaImg, emoji: "🔬", isCorrectCategory: true },
+        { id: "p3", text: "Berani mengemukakan pendapat", image: c4BeraniMengemukakanImg, emoji: "🗣️", isCorrectCategory: true },
+        { id: "p4", text: "Membantu teman saat kesulitan", image: c4MembantuTemanKesulitanImg, emoji: "🤝", isCorrectCategory: true },
+        { id: "p5", text: "Menyelamatkan anak kucing", image: c4MenyelamatkanKucingImg, emoji: "🐱", isCorrectCategory: true },
+        { id: "p6", text: "Berani berbicara di depan umum", image: c4BeraniBerbicaraImg, emoji: "🎤", isCorrectCategory: true },
+        { id: "p7", text: "Takut mencoba hal baru", image: c4TakutMencobaImg, emoji: "🫣", isCorrectCategory: false },
+        { id: "p8", text: "Diam padahal tahu jawabannya", image: c4DiamPadahalTahuImg, emoji: "🤫", isCorrectCategory: false },
+        { id: "p9", text: "Mengejek teman", image: c4MengejekTemanImg, emoji: "😜", isCorrectCategory: false },
+        { id: "p10", text: "Menakut-nakuti teman", image: c4MenakutNakutiImg, emoji: "👿", isCorrectCategory: false },
+        { id: "p11", text: "Menonton saja saat ada masalah", image: c4MenontonSajaImg, emoji: "👀", isCorrectCategory: false },
+        { id: "p12", text: "Tidak berani mengemukakan pendapat", image: c4TidakBeraniMengemukakanImg, emoji: "🤐", isCorrectCategory: false }
       ]
     },
     storyPuzzle: {
@@ -343,14 +395,14 @@ const challengesData = {
       incorrectLabel: "PERILAKU TIDAK BAIK",
       incorrectDesc: "Tempatkan gambar yang menunjukkan sikap yang tidak baik.",
       items: [
-        { id: "p1", text: "Membantu teman belajar", emoji: "📚", isCorrectCategory: true },
-        { id: "p2", text: "Berbagi bekal dengan teman", emoji: "🍱", isCorrectCategory: true },
-        { id: "p3", text: "Memberi semangat saat teman gugup", emoji: "🤝", isCorrectCategory: true },
-        { id: "p4", text: "Bernyanyi bersama", emoji: "🎵", isCorrectCategory: true },
-        { id: "p5", text: "Mengabaikan teman", emoji: "🙄", isCorrectCategory: false },
-        { id: "p6", text: "Mengejek teman", emoji: "😜", isCorrectCategory: false },
-        { id: "p7", text: "Mengerjakan tugas bersama", emoji: "✍️", isCorrectCategory: true },
-        { id: "p8", text: "Tidak mau membantu teman", emoji: "🙅", isCorrectCategory: false }
+        { id: "p1", text: "Membantu teman belajar", image: c5MembantuTemanBelajarImg, emoji: "📚", isCorrectCategory: true },
+        { id: "p2", text: "Berbagi bekal dengan teman", image: c5BerbagiBekalImg, emoji: "🍱", isCorrectCategory: true },
+        { id: "p3", text: "Memberi semangat saat teman gugup", image: c5MemberiSemangatImg, emoji: "🤝", isCorrectCategory: true },
+        { id: "p4", text: "Bernyanyi bersama", image: c5BernyanyiBersamaImg, emoji: "🎵", isCorrectCategory: true },
+        { id: "p5", text: "Mengabaikan teman", image: c5MengabaikanTemanImg, emoji: "🙄", isCorrectCategory: false },
+        { id: "p6", text: "Mengejek teman", image: c5MengejekTemanImg, emoji: "😜", isCorrectCategory: false },
+        { id: "p7", text: "Mengerjakan tugas bersama", image: c5MengerjakanTugasBersamaImg, emoji: "✍️", isCorrectCategory: true },
+        { id: "p8", text: "Tidak mau membantu teman", image: c5TidakMauMembantuImg, emoji: "🙅", isCorrectCategory: false }
       ]
     },
     storyPuzzle: {
