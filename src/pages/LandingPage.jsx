@@ -8,10 +8,13 @@ import karakterCowo from '../assets/images/charachters_landingpage/karakter_cowo
 import karakterUngu from '../assets/images/charachters_landingpage/karakter_ungu.webp';
 import kucing from '../assets/images/charachters_landingpage/kucing.webp';
 
+import logoTrilogi from '../assets/logo_trilogi/trilogi.png';
+
 import { 
   BookOpen, 
   Lightbulb,
-  GraduationCap
+  GraduationCap,
+  Mail
 } from 'lucide-react';
 
 export default function LandingPage({ onStudentStart, onTeacherStart, onScoreDashboard }) {
@@ -147,11 +150,11 @@ export default function LandingPage({ onStudentStart, onTeacherStart, onScoreDas
             </svg>
           </motion.div>
 
-          {/* 1. Logo Card (Top Left / Centered on Mobile) */}
+          {/* 1. Logo Card (Top Left) */}
           <img 
             src={cardKiriAtas} 
             alt="BuddyTalk Logo" 
-            className="absolute z-20 pointer-events-none drop-shadow-md animate-fade-in left-1/2 -translate-x-1/2 w-[55vw] lg:left-[-1.5%] lg:translate-x-0 lg:w-[21%] top-2 lg:top-[-1.5%]"
+            className="absolute z-20 pointer-events-none drop-shadow-md animate-fade-in left-2 sm:left-3 top-2 w-[42vw] max-w-[170px] lg:left-[-1.5%] lg:translate-x-0 lg:w-[21%] lg:top-[-1.5%]"
           />
 
           {/* 3. Blue Bird sitting on Left Signpost */}
@@ -351,6 +354,42 @@ export default function LandingPage({ onStudentStart, onTeacherStart, onScoreDas
         </div>
       </div>
 
+      {/* Developer & Institution Credit Badge (Kanan Atas / Top-Right) */}
+      <motion.div
+        initial={{ opacity: 0, y: -15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="absolute z-30 top-2 right-2 sm:top-3 sm:right-3 lg:top-5 lg:right-6 bg-white/95 backdrop-blur-md rounded-2xl p-2 sm:p-2.5 lg:p-3 border border-white/90 shadow-lg hover:shadow-xl transition-all duration-200 select-none group pointer-events-auto max-w-[50vw] sm:max-w-xs"
+      >
+        <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3">
+          {/* Logo Trilogi */}
+          <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-xl bg-white p-1 shadow-xs border border-blue-100 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200">
+            <img 
+              src={logoTrilogi} 
+              alt="Logo Universitas Trilogi" 
+              className="w-full h-full object-contain"
+            />
+          </div>
+
+          {/* Details */}
+          <div className="flex flex-col min-w-0 pr-0.5">
+            <span className="text-[8px] sm:text-[9px] lg:text-[10px] font-black uppercase tracking-wider text-blue-600 leading-none">
+              Universitas Trilogi
+            </span>
+            <span className="font-black text-slate-800 text-[10.5px] sm:text-xs lg:text-[13.5px] leading-tight mt-0.5 truncate">
+              Rizqiyah Fitri Nur Alifah
+            </span>
+            <a 
+              href="mailto:rizqiyahfitri6@gmail.com"
+              className="text-[9px] sm:text-[10px] lg:text-[11px] font-bold text-slate-500 hover:text-blue-600 flex items-center gap-1 transition-colors mt-0.5"
+              title="Kirim Email"
+            >
+              <Mail className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-rose-500 shrink-0" />
+              <span className="truncate">rizqiyahfitri6@gmail.com</span>
+            </a>
+          </div>
+        </div>
+      </motion.div>
 
     </motion.div>
   );

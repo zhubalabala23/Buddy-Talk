@@ -13,6 +13,7 @@ import GuideView from './pages/GuideView';
 import ScoreDashboardView from './pages/ScoreDashboardView';
 import ChallengePage from './pages/ChallengePage';
 import SebabAkibat from './pages/sebab_akibat';
+import ProfilePage from './pages/ProfilePage';
 import { saveAssessment, getStudentAssessments, updateStudentProgress, getStudent } from './db';
 import ceweAudio from './assets/images/charachters_landingpage/karakter_cewe.webp';
 import cowoImg from './assets/images/charachters_landingpage/karakter_cowo.webp';
@@ -463,16 +464,20 @@ export default function App() {
                     </button>
                     
                     <button 
-                      onClick={handleLogout}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs md:text-sm font-extrabold text-slate-500 hover:text-red-600 transition-all cursor-pointer"
+                      onClick={() => navigateTo('profile')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs md:text-sm font-extrabold transition-all cursor-pointer ${
+                        view === 'profile'
+                          ? 'bg-white text-blue-600 border border-blue-100 shadow-sm' 
+                          : 'text-slate-500 hover:text-slate-800'
+                      }`}
                     >
                       <User className="w-4 h-4" />
                       <span className="hidden sm:inline">Profil</span>
                     </button>
                   </div>
 
-                  {/* Right: Leaderboard (Klasmen) Only */}
-                  <div className="flex items-center">
+                  {/* Right: Leaderboard (Klasmen) & Keluar Button */}
+                  <div className="flex items-center gap-2">
                     {/* Klasmen Button */}
                     <button 
                       onClick={() => navigateTo('dashboard')}
@@ -480,6 +485,16 @@ export default function App() {
                     >
                       <Trophy className="w-4 h-4 text-yellow-500 fill-yellow-400" />
                       <span className="font-extrabold text-slate-700 text-xs md:text-sm">Klasmen</span>
+                    </button>
+
+                    {/* Tombol Keluar (Logout) */}
+                    <button 
+                      onClick={handleLogout}
+                      className="flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 active:scale-95 transition-all duration-200 border border-rose-200 px-3.5 py-1.5 rounded-2xl shadow-sm cursor-pointer select-none text-rose-600 hover:text-rose-700"
+                      title="Keluar dari akun"
+                    >
+                      <LogOut className="w-4 h-4 text-rose-500" />
+                      <span className="font-extrabold text-xs md:text-sm">Keluar</span>
                     </button>
                   </div>
                 </div>
@@ -581,6 +596,12 @@ export default function App() {
                     key="closing"
                     studentInfo={studentInfo}
                     topic={selectedTopic}
+                    onHome={() => navigateTo('home')}
+                  />
+                )}
+                {view === 'profile' && (
+                  <ProfilePage 
+                    key="profile"
                     onHome={() => navigateTo('home')}
                   />
                 )}
