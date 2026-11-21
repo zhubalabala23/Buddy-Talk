@@ -528,6 +528,7 @@ export default function App() {
                   <SebabAkibat
                     key="sebab-akibat"
                     onHome={() => navigateTo('home')}
+                    onComplete={() => navigateTo('home')}
                   />
                 )}
 
